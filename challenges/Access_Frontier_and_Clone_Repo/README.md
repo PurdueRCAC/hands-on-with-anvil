@@ -28,12 +28,12 @@ $ git clone https://github.com/purduercac/hands-on-with-anvil.git
 Check that you can list the files in your current directory to see the repository directory: 
 ```bash
 $ ls
-hands-on-with-Frontier-
+hands-on-with-anvil
 ```
 
 Finally, move into that directory:
 ```bash
-$ cd hands-on-with-Frontier-
+$ cd hands-on-with-anvil
 ```
 
 &nbsp;
