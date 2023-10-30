@@ -61,11 +61,11 @@ Use the `cd` command to 'change directory'. On the command line, type `cd` follo
 
 &nbsp;
 
-If you have not already cloned the repository, execute `git clone https://github.com/olcf/hands-on-with-Frontier-/` on the command line to download the 'Hands On With Frontier' repository. 
+If you have not already cloned the repository, execute `git clone https://github.com/purduercac/hands-on-with-anvil/` on the command line to download the 'Hands On With Frontier' repository. 
 
 The output should look something like:
 ```bash
-[userid@login1.frontier ~]$ git clone https://github.com/olcf/hands-on-with-Frontier-/
+[userid@login1.frontier ~]$ git clone https://github.com/purduercac/hands-on-with-anvil/
 Cloning into 'hands-on-with-Frontier-'...
 remote: Enumerating objects: 1486, done.
 remote: Counting objects: 100% (445/445), done.
