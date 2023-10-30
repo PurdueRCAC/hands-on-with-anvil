@@ -13,7 +13,7 @@ date
 module load PrgEnv-gnu
 module load hdf5
 
-source ~/miniconda-frontier-handson/bin/activate base
-source activate ~/.conda/envs/h5pympi-frontier
+source ~/miniconda-anvil-handson/bin/activate base
+source activate ~/.conda/envs/h5pympi-anvil
 
 srun -n42 python3 -u hello_mpi.py

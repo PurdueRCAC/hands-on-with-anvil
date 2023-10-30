@@ -1,6 +1,6 @@
 # Python: Parallel HDF5
 
-Scientific simulations generate large amounts of data on Frontier (about 100 Terabytes per day for some applications).
+Scientific simulations generate large amounts of data on Anvil (about 100 Terabytes per day for some applications).
 Because of how large some datafiles may be, it is important that writing and reading these files is done as fast as possible.
 Less time spent doing input/output (I/O) leaves more time for advancing a simulation or analyzing data.
 
@@ -15,7 +15,7 @@ For example, you can extract specific variables through slicing, manipulate the 
 Both HDF5 and h5py can be compiled with MPI support, which allows you to optimize your HDF5 I/O in parallel.
 MPI support in Python is accomplished through the [mpi4py](https://mpi4py.readthedocs.io/en/stable/) package, which provides complete Python bindings for MPI.
 Building h5py against mpi4py allows you to write to an HDF5 file using multiple parallel processes, which can be helpful for users handling large datasets in Python.
-h5Py is available after loading the default Python module on Frontier, but it has not been built with parallel support.
+h5Py is available after loading the default Python module on Anvil, but it has not been built with parallel support.
 
 This hands-on challenge will teach you how to build a personal, parallel-enabled version of h5py and how to write an HDF5 file in parallel using mpi4py and h5py.
 
@@ -32,7 +32,7 @@ After successfully testing your build, you will then have the opportunity to com
 
 Building h5py from source is highly sensitive to the current environment variables set in your profile.
 Because of this, it is extremely important that all the modules and conda environments we plan to load are done in the correct order, so that all the environment variables are set correctly.
-First, we will unload all the current modules that you may have previously loaded on Frontier and then immediately load the default modules.
+First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
 ```bash
@@ -49,19 +49,19 @@ Next, we will load the gnu compiler module (most Python packages assume GCC), hd
 ```bash
 $ module load PrgEnv-gnu
 $ module load hdf5
-$ source ~/miniconda-frontier-handson/bin/activate base
+$ source ~/miniconda-anvil-handson/bin/activate base
 ```
 
 We are in a "base" conda environment, but we need to create a new environment using the `conda create` command.
 Because h5py depends on NumPy, and our challenge depends on other packages (scipy and matplotlib), we will install all of them at once:
 
 ```
-$ conda create -p ~/.conda/envs/h5pympi-frontier python=3.9 libssh numpy scipy matplotlib -c conda-forge
+$ conda create -p ~/.conda/envs/h5pympi-anvil python=3.9 libssh numpy scipy matplotlib -c conda-forge
 ```
 
 >> ---
 > NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Frontier, we will be creating our environment in the "User Home" directory.
+> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
 >> ---
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
@@ -73,17 +73,17 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate ~/.conda/envs/h5pympi-frontier
+#     $ conda activate ~/.conda/envs/h5pympi-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Frontier, we will be using `source activate` instead of `conda activate` to activate our new environment:
+Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
 
 ```bash
-$ source activate ~/.conda/envs/h5pympi-frontier
+$ source activate ~/.conda/envs/h5pympi-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment. 
@@ -94,8 +94,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /ccs/home/<YOUR_USER_ID>/.conda/envs/h5pympi-frontier
-base                     /ccs/home/<YOUR_USER_ID>/miniconda-frontier-handson
+                      *  /ccs/home/<YOUR_USER_ID>/.conda/envs/h5pympi-anvil
+base                     /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 ## Installing mpi4py
@@ -246,7 +246,7 @@ You will be dealing with `galaxy.py`.
 The goal of `galaxy.py` is to simulate an infalling galaxy made up of "particles" (stars) and a "nucleus" (the compact central region) colliding with a bigger host galaxy.
 This would require a lot of code for it to be the most accurate ("many body" problems in physics are complicated); however, we made some physical assumptions to simplify the problem so that it is less complicated but still results in a roughly accurate galactic event.
 Even with simplifying things down, this script does not run quickly when not using MPI, as the amount of stars you want to simulate over a given time period quickly slows things down.
-We will be simulating 1000 stars and it takes about 10 minutes for the script to complete on Frontier when only using 1 MPI task, while completing in about 1.5 minutes when using 8 MPI tasks.
+We will be simulating 1000 stars and it takes about 10 minutes for the script to complete on Anvil when only using 1 MPI task, while completing in about 1.5 minutes when using 8 MPI tasks.
 
 In this challenge, you will be using 8 MPI tasks to help speed up the computations by splitting up the particles across your MPI tasks (each MPI task will only simulate a subset of the total number of particles).
 The tasks will then write their subset of the data in parallel to an HDF5 file that will hold the entire final dataset.

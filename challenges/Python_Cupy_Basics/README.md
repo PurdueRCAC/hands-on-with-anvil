@@ -16,7 +16,7 @@ Most operations provide an immediate speed-up out of the box, and some operation
 
 Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy’s capabilities on the system, providing significant speedups over NumPy-written code. CuPy with AMD GPUs is still being explored, and the same performance is not guaranteed (especially with larger data sizes).  
 
-Instructions for Frontier are available in this guide, but users must note that the CuPy developers have labeled this method as experimental and has limitations.
+Instructions for Anvil are available in this guide, but users must note that the CuPy developers have labeled this method as experimental and has limitations.
 
 &nbsp;
 
@@ -34,7 +34,7 @@ In this challenge, you will:
 > Before setting up your environment, you must exit and log back in so that you have a fresh login shell. This is to ensure that no previously activated environments exist in your $PATH environment variable. Additionally, you should execute module reset.
 >>  ---
 
-First, we will unload all the current modules that you may have previously loaded on Frontier and then immediately load the default modules.
+First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
 ```bash
@@ -52,18 +52,18 @@ Next, we will load the gnu compiler module (most Python packages assume GCC), re
 $ module load PrgEnv-gnu
 $ module load rocm/5.3.0
 $ module load craype-accel-amd-gfx90a
-$ source ~/miniconda-frontier-handson/bin/activate base
+$ source ~/miniconda-anvil-handson/bin/activate base
 ```
 
 We loaded the "base" conda environment, but we need to create a new environment using the `conda create` command:
 
 ```
-$ conda create -p ~/.conda/envs/cupy-frontier python=3.10
+$ conda create -p ~/.conda/envs/cupy-anvil python=3.10
 ```
 
 >>  ---
 > NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Frontier, we will be creating our environment in the "User Home" directory.
+> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
 >>  ---
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
@@ -75,17 +75,17 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate ~/.conda/envs/cupy-frontier
+#     $ conda activate ~/.conda/envs/cupy-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Frontier, we will be using `source activate` instead of `conda activate` to activate our new environment:
+Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
 
 ```bash
-$ source activate ~/.conda/envs/cupy-frontier
+$ source activate ~/.conda/envs/cupy-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
@@ -96,8 +96,8 @@ $ conda env list
 
 # conda environments:
 #
-                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/cupy-frontier
-base                    /ccs/home/<YOUR_USER_ID>/miniconda-frontier-handson
+                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/cupy-anvil
+base                    /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 CuPy depends on NumPy, so let's install an optimized version of NumPy into our fresh conda environment:
@@ -129,7 +129,7 @@ Eventually you should see output similar to:
 Successfully installed cupy-12.2.0 fastrlock-0.8.1
 ```
 
-Congratulations, you just installed CuPy on Frontier!
+Congratulations, you just installed CuPy on Anvil!
 
 &nbsp;
 
@@ -142,10 +142,10 @@ Congratulations, you just installed CuPy on Frontier!
 
 Before we start testing the CuPy scripts provided in this repository, let's go over some of the basics.
 The developers provide a great introduction to using CuPy in their user guide under the [CuPy Basics](https://docs.cupy.dev/en/stable/user_guide/basic.html) section.
-We will be following this walkthrough on Frontier.
-This is done to illustrate the basics, but participants should **NOT** explicitly follow along (as resources are limited on Frontier and interactive jobs will clog up the queue).
+We will be following this walkthrough on Anvil.
+This is done to illustrate the basics, but participants should **NOT** explicitly follow along (as resources are limited on Anvil and interactive jobs will clog up the queue).
 
-The syntax below assumes being in a Python shell with access to 4 GPUs; however, Frontier interactive nodes have 8 GPUs allocated to CuPy by default. 
+The syntax below assumes being in a Python shell with access to 4 GPUs; however, Anvil interactive nodes have 8 GPUs allocated to CuPy by default. 
 
 As is the standard with NumPy being imported as "np", CuPy is often imported in a similar fashion:
 

@@ -10,7 +10,7 @@ Slurm
 * Understand how to query the queue for your jobs status and read the results
 
 
-Frontier uses SchedMD's Slurm Workload Manager for scheduling and managing jobs. Slurm maintains similar functionality to other schedulers such as IBM's LSF, but provides unique control of Frontier's resources through custom commands and options specific to Slurm. 
+Anvil uses SchedMD's Slurm Workload Manager for scheduling and managing jobs. Slurm maintains similar functionality to other schedulers such as IBM's LSF, but provides unique control of Anvil's resources through custom commands and options specific to Slurm. 
 
 Slurm documentation for each command is available via the ``man`` utility, and on the web at [https://slurm.schedmd.com/man_index.html](https://slurm.schedmd.com/man_index.html). Additional documentation is available at [https://slurm.schedmd.com/documentation.html](https://slurm.schedmd.com/documentation.html)
 
@@ -44,9 +44,9 @@ Do ``ls`` to verify that you see `hello_mpi_omp.c`, `makefile` and `submit.sl` l
 
 We compile the code using a makefile, which is a file that specifies how to compile the program. If you are curious, you may view the makefile by doing `vi Makefile`, but you do not need to understand that file to achieve the goals of this exercise. 
 
-We will use the default programming environment on Frontier to compile this code, which means using the Cray programming environment and Cray-MPICH for MPI. On Frontier these are set up when you login. If running this tutorial on other machines, you would need to use their documentation to learn how to setup a programming environment to support MPI and OpenMP.
+We will use the default programming environment on Anvil to compile this code, which means using the Cray programming environment and Cray-MPICH for MPI. On Anvil these are set up when you login. If running this tutorial on other machines, you would need to use their documentation to learn how to setup a programming environment to support MPI and OpenMP.
 
-To use the Makefile to compile the code on Frontier, do:
+To use the Makefile to compile the code on Anvil, do:
 ```
 make
 ```
@@ -160,12 +160,12 @@ Let's examine the output of your job and use that example to begin to understand
 
 The compute nodes are composed of a CPU made of several hardware cores that have a few hardware threads each. Most modern HPC nodes also have GPUs, but we will not focus on those yet. 
 
-Below is a picture of the Frontier compute node. 
+Below is a picture of the Anvil compute node. 
 
 
 <br>
 <center>
-<img src="images/Frontier-Visualizer-NodeLegend.png" style="width:80%">
+<img src="images/Anvil-Visualizer-NodeLegend.png" style="width:80%">
 </center>
 <br>
 
@@ -189,12 +189,12 @@ In real HPC applications, MPI tasks and OpenMP processes are used to organize th
 The output of hello_mpi_omp should look like this:
 
 ```
-MPI 000 - OMP 000 - HWT 001 - Node frontier035
+MPI 000 - OMP 000 - HWT 001 - Node anvil035
 ```
 
 | MPI TaskID   | OpenMP process ID  | Hardware Thread ID | Node ID          |
 | :--------    |:-----------------  | :----------------- | :--------------  |
-| MPI 000      | OMP 000            | HWT 001            | Node frontier035 |
+| MPI 000      | OMP 000            | HWT 001            | Node anvil035 |
 
 This means that MPI task 000 and OpenMP process 000 ran on hardware thread 001 on node 35. 
 
@@ -228,7 +228,7 @@ where you replace `YOUR-JOB-NAME` and `your-job-ID-number` with the name and num
 
 If you don't see output that looks like, 
 ```
-MPI 000 - OMP 000 - HWT 001 - Node frontier035
+MPI 000 - OMP 000 - HWT 001 - Node anvil035
 ```
 retrace your steps or ask for help from the instructors. 
 
@@ -259,13 +259,13 @@ Then submit your job with `sbatch submit.sl.
 When your job is done, open the output file (looks like a variation of srun_myjob-397453.out) with 'vi' or a text editor. Does it look like this? :
 
 ```
-MPI 001 - OMP 000 - HWT 009 - Node frontier143
-MPI 004 - OMP 000 - HWT 033 - Node frontier143
-MPI 000 - OMP 000 - HWT 001 - Node frontier143
-MPI 002 - OMP 000 - HWT 017 - Node frontier143
-MPI 003 - OMP 000 - HWT 025 - Node frontier143
-MPI 005 - OMP 000 - HWT 041 - Node frontier143
-MPI 006 - OMP 000 - HWT 049 - Node frontier143
+MPI 001 - OMP 000 - HWT 009 - Node anvil143
+MPI 004 - OMP 000 - HWT 033 - Node anvil143
+MPI 000 - OMP 000 - HWT 001 - Node anvil143
+MPI 002 - OMP 000 - HWT 017 - Node anvil143
+MPI 003 - OMP 000 - HWT 025 - Node anvil143
+MPI 005 - OMP 000 - HWT 041 - Node anvil143
+MPI 006 - OMP 000 - HWT 049 - Node anvil143
 
 ```
 If so, you successfully ran 7 MPI tasks per node. 
@@ -288,24 +288,24 @@ How many CPU cores are available to each of your MPI tasks? Do you think your co
 
 Submit your job to find out. Look at the output file when you are done.
 
-If you ran on Frontier, your output would look like this: 
+If you ran on Anvil, your output would look like this: 
 
 ```
 WARNING: Requested total thread count and/or thread affinity may result in
 oversubscription of available CPU resources!  Performance may be degraded.
 Explicitly set OMP_WAIT_POLICY=PASSIVE or ACTIVE to suppress this message.
 Set CRAY_OMP_CHECK_AFFINITY=TRUE to print detailed thread-affinity messages.
-MPI 000 - OMP 000 - HWT 001 - Node frontier139
-MPI 000 - OMP 001 - HWT 001 - Node frontier139
-MPI 001 - OMP 000 - HWT 009 - Node frontier139
-MPI 001 - OMP 001 - HWT 009 - Node frontier139
-MPI 002 - OMP 000 - HWT 017 - Node frontier139
-MPI 002 - OMP 001 - HWT 017 - Node frontier139
-MPI 003 - OMP 000 - HWT 025 - Node frontier139
-MPI 003 - OMP 001 - HWT 025 - Node frontier139
+MPI 000 - OMP 000 - HWT 001 - Node anvil139
+MPI 000 - OMP 001 - HWT 001 - Node anvil139
+MPI 001 - OMP 000 - HWT 009 - Node anvil139
+MPI 001 - OMP 001 - HWT 009 - Node anvil139
+MPI 002 - OMP 000 - HWT 017 - Node anvil139
+MPI 002 - OMP 001 - HWT 017 - Node anvil139
+MPI 003 - OMP 000 - HWT 025 - Node anvil139
+MPI 003 - OMP 001 - HWT 025 - Node anvil139
 .  .  .    
 ```
-The CPU's cores could easily handle two processes each, in fact, the Frontier cores have two hardware threads each, but the default slrum setting on Frontier is to only schedule one hardware thread per core. This allows each process to have all the resources of the core. So, in the way we have submitted the job, each hardware thread had to handle two processes. You can see this in the example output by the fact that every two OMP processes share one HWT. That is not an ideal situation because the thread would need to wait for one process to finish before it could start running the other. That situation is called oversubscription and the reason for the warnings in my example output. 
+The CPU's cores could easily handle two processes each, in fact, the Anvil cores have two hardware threads each, but the default slrum setting on Anvil is to only schedule one hardware thread per core. This allows each process to have all the resources of the core. So, in the way we have submitted the job, each hardware thread had to handle two processes. You can see this in the example output by the fact that every two OMP processes share one HWT. That is not an ideal situation because the thread would need to wait for one process to finish before it could start running the other. That situation is called oversubscription and the reason for the warnings in my example output. 
 
 A better plan is to reserve a core for each process in the MPI task. What would you need to change about your current srun line, in submit.sl, to get a core reserved for each process in each MPI task? 
 
@@ -334,4 +334,4 @@ When you are done, copy the path to one of those output files to the google shee
 
 In summary, we explored the Slurm options for sbatch that allow us to reserve compute nodes via the scheduler. We explored a few of the srun options that control how the parallel job launcher lays out work on the node.  
 
-If you want to learn more, see the Frontier User Documentation's Slurm section, where there are many more examples: [https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#slurm](https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#slurm).
+If you want to learn more, see the Anvil User Documentation's Slurm section, where there are many more examples: [https://docs.olcf.ornl.gov/systems/anvil_user_guide.html#slurm](https://docs.olcf.ornl.gov/systems/anvil_user_guide.html#slurm).

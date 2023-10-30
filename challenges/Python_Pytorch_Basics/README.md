@@ -17,14 +17,14 @@ PyTorch emphasizes the flexibility and human-readableness of Python and allows d
 Think about the simplicity, structure, and usefulness of NumPy and its arrays, but more geared toward ML/DL algorithms and its tensors -- that's what PyTorch is.
 Compared to other frameworks and libraries, it is one of the more "beginner friendly" ML/DL packages due to its dynamic and familiar "Pythonic" nature.
 PyTorch is also useful when GPUs are involved because of its strong GPU acceleration ability.
-On Frontier, PyTorch is able to take advantage of the many AMD GPUs available on the system.
+On Anvil, PyTorch is able to take advantage of the many AMD GPUs available on the system.
 
 In this challenge, you will:
 
-* Learn how to access PyTorch on Frontier
+* Learn how to access PyTorch on Anvil
 * Learn the basics of PyTorch
 * Learn about Convolutional Neural Networks (CNNs)
-* Tune your own CNN on Frontier
+* Tune your own CNN on Anvil
 
 
 Table of Contents:
@@ -51,7 +51,7 @@ Table of Contents:
 
 ## 1. <a name="setup"></a>Setting Up Our Environment
 
-First, we will unload all the current modules that you may have previously loaded on Frontier and then immediately load the default modules.
+First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
 ```bash
@@ -69,18 +69,18 @@ Next, we will load the gnu compiler module (most Python packages assume GCC) and
 $ module load PrgEnv-gnu
 $ module load amd-mixed/5.6.0
 $ module load craype-accel-amd-gfx90a
-$ source ~/miniconda-frontier-handson/bin/activate base
+$ source ~/miniconda-anvil-handson/bin/activate base
 ```
 
 We loaded the "base" conda environment, but we need to create a new environment using the conda create command:
 
 ```bash
-$ conda create -p ~/.conda/envs/torch-frontier python=3.10
+$ conda create -p ~/.conda/envs/torch-anvil python=3.10
 ```
 
 >>  ---
 > NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Frontier, we will be creating our environment in the "User Home" directory.
+> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
 >>  ---
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
@@ -92,17 +92,17 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate ~/.conda/envs/torch-frontier
+#     $ conda activate ~/.conda/envs/torch-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Frontier, we will be using `source activate` instead of `conda activate` to activate our new environment:
+Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
 
 ```bash
-$ source activate ~/.conda/envs/torch-frontier
+$ source activate ~/.conda/envs/torch-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
@@ -113,8 +113,8 @@ $ conda env list
 
 # conda environments:
 #
-                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/torch-frontier
-base                    /ccs/home/<YOUR_USER_ID>/miniconda-frontier-handson
+                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/torch-anvil
+base                    /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 Finally, we can install PyTorch using `pip` in our new conda environment:
@@ -132,7 +132,7 @@ Note that we also installed matplotlib as it will be needed for plotting functio
 
 Before we jump into the PyTorch challenge script provided in this repository, let's go over some of the basics.
 The developers provide a great introduction to using PyTorch on their website under the [PyTorch Tutorials](https://pytorch.org/tutorials/beginner/basics/intro.html) section.
-We will be following a slightly modified version of that walkthrough on Frontier.
+We will be following a slightly modified version of that walkthrough on Anvil.
 
 Let's get started by importing PyTorch in a Python prompt:
 
@@ -741,7 +741,7 @@ More specifically:
 * `last_batch.png`: Shows you the last batch of animal images to get tested by the network. The pictures are titled by their actual classification and also include what the network guessed the animal was.
 * `overall_results.png`: Bar charts of how accurate your network was at predicting each class of animal. This includes your overall network accuracy, identification success (e.g., number of frogs correct divided by number of frog images), and prediction success (e.g., number of frogs correct divided by number of times GUESSED "frog").
 
-If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Frontier by doing:
+If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Anvil by doing:
 
 ```bash
 $ module load imagemagick
@@ -751,7 +751,7 @@ $ display overall_results.png
 
 Opening the images is **not required**, as all the same statistics will be printed to your `.out` file.
 
-> Note: You can only open the images if you connected to Frontier with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@frontier.olcf.ornl.gov`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
+> Note: You can only open the images if you connected to Anvil with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@anvil.olcf.ornl.gov`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
 
 After you complete the challenge, you can transfer these plots to your computer with Globus, `scp`, or `sftp` to keep as "souvenirs" from this challenge.
 

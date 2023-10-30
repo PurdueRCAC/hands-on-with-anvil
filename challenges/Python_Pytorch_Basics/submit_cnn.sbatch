@@ -19,7 +19,7 @@ export MIOPEN_CUSTOM_CACHE_DIR=${MIOPEN_USER_DB_PATH}
 rm -rf ${MIOPEN_USER_DB_PATH}
 mkdir -p ${MIOPEN_USER_DB_PATH}
 
-source ~/miniconda-frontier-handson/bin/activate base
-source activate ~/.conda/envs/torch-frontier
+source ~/miniconda-anvil-handson/bin/activate base
+source activate ~/.conda/envs/torch-anvil
 
 python3 -u cnn.py

@@ -6,19 +6,19 @@ Various Python installations and scientific packages need to be installed to ana
 Conda allows users to easily install different versions of binary software packages and any required libraries appropriate for their computing platform.
 The versatility of conda allows a user to essentially build their own isolated Python environment, without having to worry about clashing dependencies and other system installations of Python.
 
-This hands-on challenge will introduce a user to installing Conda on Frontier, the basic workflow of using conda environments, as well as providing an example of how to create a conda environment that uses a different version of Python than the base environment uses on Frontier.
+This hands-on challenge will introduce a user to installing Conda on Anvil, the basic workflow of using conda environments, as well as providing an example of how to create a conda environment that uses a different version of Python than the base environment uses on Anvil.
 
 &nbsp;
 
 ## Installing Miniconda
 
-Currently, Frontier does NOT have Anaconda/Conda modules, so we'll have to install Conda ourselves.
+Currently, Anvil does NOT have Anaconda/Conda modules, so we'll have to install Conda ourselves.
 More specifically, we'll be installing Miniconda which is a more minimal version of Anaconda that will be quicker to install.
 Luckily, a script was created ahead of time to do this for you!
-All you need to do is run the `install_conda_frontier.sh` script like so:
+All you need to do is run the `install_conda_anvil.sh` script like so:
 
 ```bash
-$ ~/hands-on-with-anvil/misc_scripts/install_conda_frontier.sh
+$ ~/hands-on-with-anvil/misc_scripts/install_conda_anvil.sh
 ```
 
 >>  ---
@@ -31,7 +31,7 @@ Provided there are no errors (there shouldn't be), you will now have access to y
 
 ## Inspecting and setting up the environment
 
-First, we will unload all the current modules that you may have previously loaded on Frontier:
+First, we will unload all the current modules that you may have previously loaded on Anvil:
 
 ```bash
 $ module reset
@@ -43,10 +43,10 @@ Next, we need to load the gnu compiler module (most Python packages assume use o
 $ module load PrgEnv-gnu
 ```
 
-Next, let's activate your Frontier Miniconda installation:
+Next, let's activate your Anvil Miniconda installation:
 
 ```bash
-$ source ~/miniconda-frontier-handson/bin/activate base
+$ source ~/miniconda-anvil-handson/bin/activate base
 ```
 
 This puts you in the "`base`" conda environment (your base-level install that came with a few packages).
@@ -54,7 +54,7 @@ Typical best practice is to not install new things into the `base` environment, 
 So, next, we will create a new environment using the `conda create` command:
 
 ```bash
-$ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/py39-frontier python=3.9
+$ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil python=3.9
 ```
 
 The "`-p`" flag specifies the desired path and name of your new virtual environment.
@@ -63,7 +63,7 @@ Directories will be created if they do not exist already (provided you have writ
 Instead, one can solely use the `--name <your_env_name>` flag which will automatically use your `$HOME` directory.
 
 >>  ---
-> NOTE: It is highly recommended to create new environments in the "Project Home" directory (on Frontier, this is `/ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>`).
+> NOTE: It is highly recommended to create new environments in the "Project Home" directory (on Anvil, this is `/ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>`).
 > This space avoids purges, allows for potential collaboration within your project, and works better with the compute nodes.
 > It is also recommended, for convenience, that you use environment names that indicate the hostname, as virtual environments created on one system will not necessarily work on others.
 >>  ---
@@ -78,18 +78,18 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/py39-frontier
+#     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Frontier, we will be using `source activate` and `source deactivate` instead of `conda activate` and `conda deactivate`.
+Due to the specific nature of conda on Anvil, we will be using `source activate` and `source deactivate` instead of `conda activate` and `conda deactivate`.
 Let's activate our new environment:
 
 ```bash
-$ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/py39-frontier
+$ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
@@ -100,8 +100,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/py39-frontier
-base                     /ccs/home/<YOUR_USER_ID>/miniconda-frontier-handson
+                      *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
+base                     /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 &nbsp;
@@ -114,7 +114,7 @@ There are a few different approaches.
 One way to install packages into your conda environment is to build packages from source using [pip](https://pip.pypa.io/en/stable/).
 This approach is useful if a specific package or package version is not available in the conda repository, or if the pre-compiled binaries don't work on the HPC resources (which is common).
 However, building from source means you need to take care of some of the dependencies yourself, especially for optimization.
-In Frontier's case, this means we need to load the `openblas` module.
+In Anvil's case, this means we need to load the `openblas` module.
 Pip is available to use after installing Python into your conda environment, which we have already done.
 
 >>  ---
@@ -191,11 +191,11 @@ Congratulations, you have just created your own Python environment and ran on on
     It is not recommended to try to install new packages into the base environment.
     Instead, you can clone the base environment for yourself and install packages into the clone.
     To clone an environment, you must use the `--clone <env_to_clone>` flag when creating a new conda environment.
-    An example for cloning the base environment into your `$HOME` directory on Frontier is provided below:
+    An example for cloning the base environment into your `$HOME` directory on Anvil is provided below:
 
     ```bash
-    $ conda create -p /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-frontier --clone base
-    $ source activate /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-frontier
+    $ conda create -p /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil --clone base
+    $ source activate /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil
     ```
 
 * Deleting an environment:
@@ -235,17 +235,17 @@ Congratulations, you have just created your own Python environment and ran on on
     $ conda config --show envs_dirs
     ```
 
-    On Frontier, the default location is your `$HOME` directory.
+    On Anvil, the default location is your `$HOME` directory.
     If you plan to frequently create environments in a different location than the default (such as `/ccs/proj/...`), then there is an option to add directories to the `envs_dirs` list.
     To do so, you must execute:
 
     ```bash
-    $ conda config --append envs_dirs /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier
+    $ conda config --append envs_dirs /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil
     ```
     
     This will create a `.condarc` file in your `$HOME` directory if you do not have one already, which will now contain this new envs_dirs location.
-    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/env_name` flag and specifying the full path to the environment.
-    For example, you can do `source activate py3711-frontier` instead of `source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/frontier/py3711-frontier`.
+    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/env_name` flag and specifying the full path to the environment.
+    For example, you can do `source activate py3711-anvil` instead of `source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py3711-anvil`.
 
 &nbsp;
 

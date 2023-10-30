@@ -1,15 +1,15 @@
-# Access Frontier and Clone Repository
+# Access Anvil and Clone Repository
 
-Follow the instructions below to login to OLCF's Frontier compute system and grab a copy of the code we'll be using.
+Follow the instructions below to login to OLCF's Anvil compute system and grab a copy of the code we'll be using.
 
 <hr>
 
 &nbsp;
 
-## Get started by logging into Frontier using SSH. 
-Use the userid and passcode that you setup for Frontier to login. 
+## Get started by logging into Anvil using SSH. 
+Use the userid and passcode that you setup for Anvil to login. 
 ```bash
-ssh userid@frontier.olcf.ornl.gov
+ssh userid@anvil.olcf.ornl.gov
 ```
 &nbsp;
 

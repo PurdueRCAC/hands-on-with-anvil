@@ -14,7 +14,7 @@ module load PrgEnv-gnu
 module load rocm/5.3.0
 module load craype-accel-amd-gfx90a
 
-source ~/miniconda-frontier-handson/bin/activate base
-source activate ~/.conda/envs/cupy-frontier
+source ~/miniconda-anvil-handson/bin/activate base
+source activate ~/.conda/envs/cupy-anvil
 
 srun -n1 --gpus-per-task=3 --gpu-bind=closest python3 data_transfer.py

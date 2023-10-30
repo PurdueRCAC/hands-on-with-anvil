@@ -1,6 +1,6 @@
 # GPU Kernel Profiling Using ROCm
 
-ROCm provides useful profiling tools on Frontier to profile HIP
+ROCm provides useful profiling tools on Anvil to profile HIP
 performance with their ROCProfiler API. We will be using the rocprof command-line tool to generate stats on all kernels being run, the number of times they are run, the total duration and the average duration (in nanoseconds) of the kernel, and the GPU usage percentage. There are numerous ways to use these tools, we encourage you to read more about ROCm Profiling tools
 [here](https://docs.amd.com/bundle/ROCProfiler-User-Guide-v5.1/page/Introduction_to_ROCProfiler_User_Guide.html).
 
@@ -94,8 +94,8 @@ slides, recordings, and homework problems to help you learn CUDA programming and
 
 HPCToolkit is an integrated suite of tools for measurement and analysis of program performance on computers ranging from multicore desktop systems to the nation’s largest supercomputers. HPCToolkit provides accurate measurements of a program’s work, resource consumption, and inefficiency, correlates these metrics with the program’s source code, works with multilingual, fully optimized binaries, has very low measurement overhead, and scales to large parallel systems. HPCToolkit’s measurements provide support for analyzing a program execution cost, inefficiency, and scaling characteristics both within and across nodes of a parallel system. 
 
-You can learn more about the HPCToolkit and other profiling applications on the [Frontier
-documentation](https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#getting-started-with-hpctoolkit) page.
+You can learn more about the HPCToolkit and other profiling applications on the [Anvil
+documentation](https://docs.olcf.ornl.gov/systems/anvil_user_guide.html#getting-started-with-hpctoolkit) page.
 
 ## Useful resources
 
