@@ -185,7 +185,7 @@ first.
 And that should give you the basics you need for UNIX and Vim! Try working through the
 other challenges in this repository now. If you want more in depth details about using
 UNIX and Vim, you can find it in the `intro_to_unix` and `intro_to_vim` directories in the
-[Foundational HPC Skills repository](https://github.com/olcf/foundational_hpc_skills)
+[Foundational HPC Skills repository](https://github.com/purduercac/foundational_hpc_skills)
 
 # Cheatsheet
 

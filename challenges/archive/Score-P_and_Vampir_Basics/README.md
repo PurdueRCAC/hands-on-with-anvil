@@ -783,4 +783,4 @@ Then everything else in the Score-P process is the same, and you will be able to
 
 [CUDA Perfomance Measurement](https://scorepci.pages.jsc.fz-juelich.de/scorep-pipelines/docs/scorep-4.1/html/measurement.html#cuda_adapter)
 
-[Redudant_MM Code](https://github.com/olcf/HIP_for_CUDA_programmers/tree/master/examples/redundant_MM)
+[Redudant_MM Code](https://github.com/purduercac/HIP_for_CUDA_programmers/tree/master/examples/redundant_MM)
