@@ -83,7 +83,7 @@ for the `row_sums` is nearly equal to the `column_sums` kernel. Compare this wit
 previous output file and you can see it is much faster than the `row_sums` of our previous
 code. What causes this?  This is because of the way the `row_sums` was rewritten. It now
 takes advantage of memory coalescing and more parallelism compared to the previous
-code. The [OLCF CUDA training series](https://www.olcf.ornl.gov/cuda-training-series/) is
+code. The [OLCF CUDA training series](https://www.rcac.purdue.edu/cuda-training-series/) is
 an excellent resource if you want to learn more about how and why this works. You can find
 slides, recordings, and homework problems to help you learn CUDA programming and optimizing.
 
@@ -95,10 +95,10 @@ slides, recordings, and homework problems to help you learn CUDA programming and
 HPCToolkit is an integrated suite of tools for measurement and analysis of program performance on computers ranging from multicore desktop systems to the nation’s largest supercomputers. HPCToolkit provides accurate measurements of a program’s work, resource consumption, and inefficiency, correlates these metrics with the program’s source code, works with multilingual, fully optimized binaries, has very low measurement overhead, and scales to large parallel systems. HPCToolkit’s measurements provide support for analyzing a program execution cost, inefficiency, and scaling characteristics both within and across nodes of a parallel system. 
 
 You can learn more about the HPCToolkit and other profiling applications on the [Anvil
-documentation](https://docs.olcf.ornl.gov/systems/anvil_user_guide.html#getting-started-with-hpctoolkit) page.
+documentation](https://docs.rcac.purdue.edu/systems/anvil_user_guide.html#getting-started-with-hpctoolkit) page.
 
 ## Useful resources
 
 - Coffeebeforearch's video on coalescing in GPUs: https://www.youtube.com/watch?v=_qSP455IekE
 - Slides on parallel reduction: https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
-- The OLCF CUDA training series: https://www.olcf.ornl.gov/cuda-training-series/
+- The OLCF CUDA training series: https://www.rcac.purdue.edu/cuda-training-series/

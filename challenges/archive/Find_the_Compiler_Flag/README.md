@@ -23,7 +23,7 @@ $ module load cuda
 
 ## Step 2: Find the Necessary Compiler Flag
 
-Next, you will need to find the GCC compiler flag needed to compile the code with OpenACC-support. To do so, you can either search within the [Anvil User Guide](https://docs.olcf.ornl.gov/systems/anvil_user_guide.html#), within the [GCC Wiki](https://gcc.gnu.org/wiki/HomePage), or just Google "GCC OpenACC compiler flag". Being able to use on-line resources to find e.g., compiler flags is often a necessary task in HPC.
+Next, you will need to find the GCC compiler flag needed to compile the code with OpenACC-support. To do so, you can either search within the [Anvil User Guide](https://docs.rcac.purdue.edu/systems/anvil_user_guide.html#), within the [GCC Wiki](https://gcc.gnu.org/wiki/HomePage), or just Google "GCC OpenACC compiler flag". Being able to use on-line resources to find e.g., compiler flags is often a necessary task in HPC.
 
 > NOTE: Compiler flags differ between different compilers so make sure you find the correct flag for the **GCC compiler**.
 

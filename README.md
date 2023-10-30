@@ -2,7 +2,7 @@
 
 
 ### What is Anvil?
-Anvil, located at [Oak Ridge National Laboratory](https://www.ornl.gov/) in Oak Ridge, TN,  is one of the [world's most powerful supercomputers](https://www.top500.org/system/180047/) dedicated to open scientific research. It has lots of unique architectural features that we'll explore today, including:
+Anvil, located at [Oak Ridge National Laboratory](https://rcac.purdue.edu/) in Oak Ridge, TN,  is one of the [world's most powerful supercomputers](https://www.top500.org/system/180047/) dedicated to open scientific research. It has lots of unique architectural features that we'll explore today, including:
 
 - 64-core AMD “Optimized 3rd Gen EPYC” CPU (x9,408)
 - AMD MI250X GPU (x37,632)
@@ -29,7 +29,7 @@ reference materials outside of what's provided in this repository.
 
 ### Helpful Links
 
-#### [<img src="./images/anvil_logo_2023.png" width="170" valign="middle" alt="Anvil"/>   Official Anvil User Guide & Documentation](https://docs.olcf.ornl.gov/systems/summit_user_guide.html)
+#### [<img src="./images/anvil_logo_2023.png" width="170" valign="middle" alt="Anvil"/>   Official Anvil User Guide & Documentation](https://docs.rcac.purdue.edu/systems/summit_user_guide.html)
 
 #### [<img src="./images/SchedMD_Logo_2023.png" width="170" valign="middle" alt="Anvil"/>   SchedMD Slurm Documentation (scheduler)](https://slurm.schedmd.com/documentation.html)
 
@@ -37,5 +37,5 @@ reference materials outside of what's provided in this repository.
 <hr>
 <br>
 <p align="center">
-  <a href="https://www.olcf.ornl.gov/"><img src="./images/olcf_logo.png" width="400" alt="Oak Ridge Leadership Computing Facility"></a>
+  <a href="https://www.rcac.purdue.edu/"><img src="./images/rcac_logo.png" width="400" alt="Oak Ridge Leadership Computing Facility"></a>
 </p>

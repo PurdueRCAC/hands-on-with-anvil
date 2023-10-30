@@ -751,7 +751,7 @@ $ display overall_results.png
 
 Opening the images is **not required**, as all the same statistics will be printed to your `.out` file.
 
-> Note: You can only open the images if you connected to Anvil with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@anvil.olcf.ornl.gov`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
+> Note: You can only open the images if you connected to Anvil with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@anvil.rcac.purdue.edu`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
 
 After you complete the challenge, you can transfer these plots to your computer with Globus, `scp`, or `sftp` to keep as "souvenirs" from this challenge.
 
@@ -794,7 +794,7 @@ To do this challenge:
 
 Thanks for following along and attempting the challenge!
 If you liked this challenge, I suggest exploring [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html) and [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html) for speeding up training.
-Our OLCF analytics team also made some nice overview examples of [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/).
+Our OLCF analytics team also made some nice overview examples of [Distributed Deep Learning on Summit](https://code.purdue.edu/rcac-analytics/summit/distributed-deep-learning-examples/).
 If you liked PyTorch I also suggest taking a loot at [PyTorch Lightning](https://www.pytorchlightning.ai/). 
 
 ### 5.1 <a name="leaderboard"></a>Leaderboard
@@ -829,7 +829,7 @@ Extra information:
 
 * [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html)
 * [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
-* [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/)
+* [Distributed Deep Learning on Summit](https://code.purdue.edu/rcac-analytics/summit/distributed-deep-learning-examples/)
 * [PyTorch Lightning](https://www.pytorchlightning.ai/)
 
 

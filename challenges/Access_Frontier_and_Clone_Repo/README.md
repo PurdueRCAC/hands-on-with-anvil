@@ -9,7 +9,7 @@ Follow the instructions below to login to OLCF's Anvil compute system and grab a
 ## Get started by logging into Anvil using SSH. 
 Use the userid and passcode that you setup for Anvil to login. 
 ```bash
-ssh userid@anvil.olcf.ornl.gov
+ssh userid@anvil.rcac.purdue.edu
 ```
 &nbsp;
 

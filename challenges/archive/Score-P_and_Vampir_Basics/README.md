@@ -352,7 +352,7 @@ In order to load Vampir on Ascent, you must have X forwarding. This process diff
 To log in with X forwarding, logout of Ascent, and then ssh back in with the -X flag:
 
 ```
-$ ssh -X <username>@login1.ascent.olcf.ornl.gov
+$ ssh -X <username>@login1.ascent.rcac.purdue.edu
 ```
 
 Another thing you will need to have is the XQuartz app. You can find XQuartz for MacOS here: [XQuartz Download](https://www.xquartz.org/)
@@ -367,7 +367,7 @@ Please go to the following links to set up Xming and Putty:
 
 [PuTTy Setup with SSH and X11](http://ocean.stanford.edu/courses/ESS141/PuTTY/).
 
-While following the second link's instructions, use `login1.ascent.olcf.ornl.gov` hostname instead of "ocean.stanford.edu" and use your own username instead of "gp235". 
+While following the second link's instructions, use `login1.ascent.rcac.purdue.edu` hostname instead of "ocean.stanford.edu" and use your own username instead of "gp235". 
 
 **Launching Vampir**
 Once you have the necessary software and are logged in with X forwarding, you can load the Vampir module to your environment:
@@ -385,7 +385,7 @@ Run the Vampir GUI remotely via X-forwarding
   $ vampir &
 ```
 
-We will be using the `vampir &` command to lauch Vampir remotely since our trace file isn't very large. For large trace files (over 1 GB), see the [VampirServer Documentation](https://docs.olcf.ornl.gov/software/profiling/Vampir.html#vampir-using-vampirserver).
+We will be using the `vampir &` command to lauch Vampir remotely since our trace file isn't very large. For large trace files (over 1 GB), see the [VampirServer Documentation](https://docs.rcac.purdue.edu/software/profiling/Vampir.html#vampir-using-vampirserver).
 
 To lauch Vampir:
 
@@ -626,7 +626,7 @@ Now that we have the profiling and tracing results with just MPI, we can do the 
 With the two trace files we just made (MPI and MPI_OpenMP), we can now use Vampir to compare them side by side. First, you will need to sign out of Ascent and sign back in with X forwarding:
 
 ```
-$ ssh -X <username>@login1.ascent.olcf.ornl.gov
+$ ssh -X <username>@login1.ascent.rcac.purdue.edu
 ```
 
 Enter in your password, then load and launch Vampir:
@@ -767,11 +767,11 @@ Then everything else in the Score-P process is the same, and you will be able to
 
 [Vampir Visualizations Guide](https://vampir.eu/tutorial/manual/performance_data_visualization)
 
-[Score-P OLCF Documentation](https://docs.olcf.ornl.gov/software/profiling/Scorep.html)
+[Score-P OLCF Documentation](https://docs.rcac.purdue.edu/software/profiling/Scorep.html)
 
-[Vampir OLCF Documentation](https://docs.olcf.ornl.gov/software/profiling/Vampir.html)
+[Vampir OLCF Documentation](https://docs.rcac.purdue.edu/software/profiling/Vampir.html)
 
-[OLCF Training Archives.](https://docs.olcf.ornl.gov/training/training_archive.html) (There are two Score-P presentations called "Intro to Score-P" and "Advanced Score-P" that are listed.) 
+[OLCF Training Archives.](https://docs.rcac.purdue.edu/training/training_archive.html) (There are two Score-P presentations called "Intro to Score-P" and "Advanced Score-P" that are listed.) 
 
 [Monte Carlo Code Explanation](http://www.selkie.macalester.edu/csinparallel/modules/MPIProgramming/build/html/calculatePi/Pi.html)
 
