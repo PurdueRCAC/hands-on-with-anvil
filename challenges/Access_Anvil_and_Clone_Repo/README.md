@@ -28,7 +28,7 @@ GitHub is a code-hosting platform for version control and collaboration. It lets
 You will need to `clone` a copy of our repository to your `home` directory so that you can complete all of our challenges. Use the following commands to complete this step:
 ```bash
 $ cd $HOME
-$ git clone https://github.com/PurdueRCAC/hands-on-with-anvil.git
+$ git clone https://github.com/purduercac/hands-on-with-anvil.git
 ```
 
 Check that you can list the files in your current directory to see the repository directory: 
