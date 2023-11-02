@@ -352,7 +352,7 @@ In order to load Vampir on Ascent, you must have X forwarding. This process diff
 To log in with X forwarding, logout of Ascent, and then ssh back in with the -X flag:
 
 ```
-$ ssh -X <username>@login1.ascent.rcac.purdue.edu
+$ ssh -X <username>@login01.ascent.rcac.purdue.edu
 ```
 
 Another thing you will need to have is the XQuartz app. You can find XQuartz for MacOS here: [XQuartz Download](https://www.xquartz.org/)
@@ -367,7 +367,7 @@ Please go to the following links to set up Xming and Putty:
 
 [PuTTy Setup with SSH and X11](http://ocean.stanford.edu/courses/ESS141/PuTTY/).
 
-While following the second link's instructions, use `login1.ascent.rcac.purdue.edu` hostname instead of "ocean.stanford.edu" and use your own username instead of "gp235". 
+While following the second link's instructions, use `login01.ascent.rcac.purdue.edu` hostname instead of "ocean.stanford.edu" and use your own username instead of "gp235". 
 
 **Launching Vampir**
 Once you have the necessary software and are logged in with X forwarding, you can load the Vampir module to your environment:
@@ -626,7 +626,7 @@ Now that we have the profiling and tracing results with just MPI, we can do the 
 With the two trace files we just made (MPI and MPI_OpenMP), we can now use Vampir to compare them side by side. First, you will need to sign out of Ascent and sign back in with X forwarding:
 
 ```
-$ ssh -X <username>@login1.ascent.rcac.purdue.edu
+$ ssh -X <username>@login01.ascent.rcac.purdue.edu
 ```
 
 Enter in your password, then load and launch Vampir:

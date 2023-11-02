@@ -12,7 +12,7 @@ The Command Line (also called a command prompt) is a text interface for a comput
 
 Below is the command line prompt, you can run programs and navigate through files just like you would with Windows Explorer on Windows or Finder on MacOS.
 ```bash
-[userid@login1.anvil ~]$
+[userid@login01.anvil ~]$
 ```
 >> ---
 > This example system has been set up so the userid, the login node, and the system are displayed in brackets before the prompt. Some systems will only start with the "$".
@@ -20,7 +20,7 @@ Below is the command line prompt, you can run programs and navigate through file
 
 As an example, print your userid by typing `whoami` into the command line and pressing `Enter`. 
 ```bash
-[userid@login1.anvil ~]$ whoami
+[userid@login01.anvil ~]$ whoami
 userid
 ```
 
@@ -34,13 +34,13 @@ To put us all in the same starting place, we will issue the `cd` command. This w
 
 Type
 ```
-[userid@login1.anvil ~]$ cd
+[userid@login01.anvil ~]$ cd
 ```
 Then hit `return`.
 
 The commands in a command line are always executed from the directory you are currently in. You can find out what directory you are currently in with the 'present working directory' command, `pwd`.
 ```bash
-[userid@login1.anvil ~]$ pwd
+[userid@login01.anvil ~]$ pwd
 /home/userid
 ```
 
@@ -51,8 +51,8 @@ The string with forward slashes like e.g. `/home/userid` is a called a _path_. I
 Use the `cd` command to 'change directory'. On the command line, type `cd` followed by the _path_ of the target directory. If `pwd` does not show that you are in your `/home/<userid>` directory, we can use `cd` followed by the path to get there.
 
 ```bash
-[userid@login1.anvil ~]$ cd /home/userid
-[userid@login1.anvil ~]$ pwd
+[userid@login01.anvil ~]$ cd /home/userid
+[userid@login01.anvil ~]$ pwd
 /home/userid
 ```
 >> ---
@@ -65,7 +65,7 @@ If you have not already cloned the repository, execute `git clone https://github
 
 The output should look something like:
 ```bash
-[userid@login1.anvil ~]$ git clone https://github.com/purduercac/hands-on-with-anvil/
+[userid@login01.anvil ~]$ git clone https://github.com/purduercac/hands-on-with-anvil/
 Cloning into 'hands-on-with-anvil'...
 remote: Enumerating objects: 1486, done.
 remote: Counting objects: 100% (445/445), done.
@@ -78,34 +78,34 @@ Resolving deltas: 100% (829/829), done.
 
 Use the `ls` command to see what files and directories are present in your current directory. You should see something similar to this:
 ```bash
-[userid@login1.anvil ~]$ ls
+[userid@login01.anvil ~]$ ls
 hands-on-with-anvil
 ```
 
 From here, lets try using `cd` to get to the `Basic_Unix_Vim` challenge directory in the `hands-on-with-anvil` repository.
 ```bash
-[userid@login1.anvil ~]$ cd ~/hands-on-with-anvil/challenges/Basic_Unix_Vim
+[userid@login01.anvil ~]$ cd ~/hands-on-with-anvil/challenges/Basic_Unix_Vim
 ```
 
 This is the path _relative to your current directory_ (which would be `/home/<userid>`). You can also use the _absolute path_ with `cd` i.e. the path string starting with `/` is called a absolute path. This will take you to the same directory.
 ```bash
-[userid@login1.anvil ~]$ cd /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim
+[userid@login01.anvil ~]$ cd /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim
 ```
 
 Execute `pwd` to check if you're in the right place, and execute `ls` to see what files are available in this directory. 
 
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ pwd 
+[userid@login01.anvil Basic_Unix_Vim]$ pwd 
 /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim
-[userid@login1.anvil Basic_Unix_Vim]$ ls
+[userid@login01.anvil Basic_Unix_Vim]$ ls
 images README.md text_file.txt
 ```
 
 If you want to go back to where you were, remember the previous path you had and use `cd` to navigate there. e.g. `cd /home/<userid>` . 
 
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ cd /home/userid
-[userid@login1.anvil ~]$ pwd
+[userid@login01.anvil Basic_Unix_Vim]$ cd /home/userid
+[userid@login01.anvil ~]$ pwd
 /home/userid
 ```
 
@@ -113,8 +113,8 @@ Let us now learn how to create a new directory. Now that you are in the `Basic_U
 
 For example, create a directory named 'mydirectory' by do the following:
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ mkdir mydirectory 
-[userid@login1.anvil Basic_Unix_Vim]$ ls
+[userid@login01.anvil Basic_Unix_Vim]$ mkdir mydirectory 
+[userid@login01.anvil Basic_Unix_Vim]$ ls
 images mydirectory README.md text_file.txt
 ```
 
@@ -122,17 +122,17 @@ Now we can use that directory to hold files. Lets try using the `cp` command to 
 
 Try to copy the file `text_file.txt` to the newly created `mydirectory` directory using this command:
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ cp test_file.txt mydirectory
+[userid@login01.anvil Basic_Unix_Vim]$ cp test_file.txt mydirectory
 ```
 
 Remember that specifying the full path for the file or directory will also work.
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ cp /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim/text_file.txt /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim/mydirectory
+[userid@login01.anvil Basic_Unix_Vim]$ cp /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim/text_file.txt /home/<userid>/hands-on-with-anvil/challenges/Basic_Unix_Vim/mydirectory
 ```
 
 You can check the contents of a directory with `ls` without first using `cd` to go to that directory, by using `ls` followed by the path or directory name.
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ ls mydirectory
+[userid@login01.anvil Basic_Unix_Vim]$ ls mydirectory
 text_file.txt
 ```
 
@@ -148,7 +148,7 @@ line. It provides the quickest way to view and modify files when you don't have 
 You should be familiar with the command format by now. To open a file in Vim, execute the `vim` command with the name of the file. Try to open the file `text_file.txt` with Vim.
 
 ```bash
-[userid@login1.anvil Basic_Unix_Vim]$ vim text_file.txt
+[userid@login01.anvil Basic_Unix_Vim]$ vim text_file.txt
 ```
 
 This will open a window that looks like this:
