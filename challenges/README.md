@@ -13,15 +13,15 @@ pick any 7 of the challenges below. For all challenges other than the first one,
 4. [Srun_Job_Launcher](Srun_Job_Launcher)
 5. [OpenMP_Basics](OpenMP_Basics)
 6. [MPI_Basics](MPI_Basics)
-7. [OpenMP_Offload](OpenMP_Offload) (Anvil only)
-8. [GPU_Matrix_Multiply](GPU_Matrix_Multiply) (Anvil only) 
+7. [OpenMP_Offload](OpenMP_Offload) (Frontier only)
+8. [GPU_Matrix_Multiply](GPU_Matrix_Multiply) (Frontier only) 
 9. [Python_Conda_Basics](Python_Conda_Basics) (Required before attemping any of the Python challenges below)
 10. [Python_Pytorch_Basics](Python_Pytorch_Basics)
 11. [Python_Parallel_HDF5](Python_Parallel_HDF5)
 
 After completing 7 of the above challenges, feel free to "choose your own adventure" by completing the rest of the challenges in any order you prefer.
 
-- [Python_Cupy_Basics](Python_Cupy_Basics) (Anvil only) 
-- [GPU_Profiling](GPU_Profiling) (Anvil only) 
+- [Python_Cupy_Basics](Python_Cupy_Basics) (Frontier only) 
+- [GPU_Profiling](GPU_Profiling) (Frontier only) 
 - [Jobs_in_Time_Window](Jobs_in_Time_Window)
 - [Password_in_a_Haystack](Password_in_a_Haystack)
