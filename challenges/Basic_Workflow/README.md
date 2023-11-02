@@ -35,7 +35,7 @@ Now that you've set up your programming environment for the code used in this ch
 $ cd ~/hands-on-with-anvil/challenges/Basic_Workflow
 ```
 
-> NOTE: The path above assumes you cloned the repo in your `/ccs/home/username` directory.
+> NOTE: The path above assumes you cloned the repo in your `/home/username` directory.
 
 Then compile the code. To do so, you'll use the provided `Makefile`, which is a file containing the set of commands to automate the compilation process. To use the `Makefile`, issue the following command:
 

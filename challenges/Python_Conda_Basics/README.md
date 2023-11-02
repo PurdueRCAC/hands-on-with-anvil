@@ -101,7 +101,7 @@ $ conda env list
 # conda environments:
 #
                       *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
-base                     /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
+base                     /home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 &nbsp;
@@ -194,8 +194,8 @@ Congratulations, you have just created your own Python environment and ran on on
     An example for cloning the base environment into your `$HOME` directory on Anvil is provided below:
 
     ```bash
-    $ conda create -p /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil --clone base
-    $ source activate /ccs/home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil
+    $ conda create -p /home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil --clone base
+    $ source activate /home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil
     ```
 
 * Deleting an environment:

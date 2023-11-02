@@ -96,8 +96,8 @@ $ conda env list
 
 # conda environments:
 #
-                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/cupy-anvil
-base                    /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
+                      * /home/<YOUR_USER_ID>/.conda/envs/cupy-anvil
+base                    /home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 CuPy depends on NumPy, so let's install an optimized version of NumPy into our fresh conda environment:

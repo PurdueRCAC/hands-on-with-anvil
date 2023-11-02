@@ -94,8 +94,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /ccs/home/<YOUR_USER_ID>/.conda/envs/h5pympi-anvil
-base                     /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
+                      *  /home/<YOUR_USER_ID>/.conda/envs/h5pympi-anvil
+base                     /home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 ## Installing mpi4py

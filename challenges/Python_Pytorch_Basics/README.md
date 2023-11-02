@@ -113,8 +113,8 @@ $ conda env list
 
 # conda environments:
 #
-                      * /ccs/home/<YOUR_USER_ID>/.conda/envs/torch-anvil
-base                    /ccs/home/<YOUR_USER_ID>/miniconda-anvil-handson
+                      * /home/<YOUR_USER_ID>/.conda/envs/torch-anvil
+base                    /home/<YOUR_USER_ID>/miniconda-anvil-handson
 ```
 
 Finally, we can install PyTorch using `pip` in our new conda environment:
