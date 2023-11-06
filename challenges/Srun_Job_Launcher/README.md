@@ -10,7 +10,7 @@ Slurm
 * Understand how to query the queue for your jobs status and read the results
 
 
-Frontier uses SchedMD's Slurm Workload Manager for scheduling and managing jobs. Slurm maintains similar functionality to other schedulers such as IBM's LSF, but provides unique control of Frontier's resources through custom commands and options specific to Slurm. 
+Anvil uses SchedMD's Slurm Workload Manager for scheduling and managing jobs. Slurm maintains similar functionality to other schedulers such as IBM's LSF, but provides unique control of Anvil's resources through custom commands and options specific to Slurm. 
 
 Slurm documentation for each command is available via the ``man`` utility, and on the web at [https://slurm.schedmd.com/man_index.html](https://slurm.schedmd.com/man_index.html). Additional documentation is available at [https://slurm.schedmd.com/documentation.html](https://slurm.schedmd.com/documentation.html)
 
@@ -36,17 +36,24 @@ We will use a code called `hello_mpi_omp` written by Tom Papatheodore as our tes
 To begin, make sure you are in the directory for the challenge by doing: 
 
 ```
-cd ~/hands-on-with-Frontier-/challenges/srun_Job_Launcher
+cd ~/hands-on-with-anvil/challenges/Srun_Job_Launcher
 
 ```
 
-Do ``ls`` to verify that you see `hello_mpi_omp.c`, `makefile` and `submit.sl` listed. 
+Do ``ls`` to verify that you see `hello_mpi_omp.c`, `Makefile` and `submit.sl` listed. 
 
 We compile the code using a makefile, which is a file that specifies how to compile the program. If you are curious, you may view the makefile by doing `vi Makefile`, but you do not need to understand that file to achieve the goals of this exercise. 
 
-We will use the default programming environment on Frontier to compile this code, which means using the Cray programming environment and Cray-MPICH for MPI. On Frontier these are set up when you login. If running this tutorial on other machines, you would need to use their documentation to learn how to setup a programming environment to support MPI and OpenMP.
+We will use the default programming environment on Anvil to compile this code, which means using the GCC programming environment and OpenMPI for MPI. On Anvil these are set up when you login. If running this tutorial on other machines, you would need to use their documentation to learn how to setup a programming environment to support MPI and OpenMP.
 
-To use the Makefile to compile the code on Frontier, do:
+Ensure you have desired environment modules loaded:
+
+```
+$ module load gcc openmpi
+$ module list
+```
+
+To use the Makefile to compile the code on Anvil, do:
 ```
 make
 ```
@@ -69,13 +76,13 @@ The example batch script, `submit.sl` looks like this:
 #SBATCH -J srun_<enter your name here>
 #SBATCH -o %x-%j.out
 #SBATCH -t 10:00
-#SBATCH -p batch
+#SBATCH -p wholenode
 #SBATCH -N 1
 
 # number of OpenMP threads
 export OMP_NUM_THREADS=1
 
-# jsrun command to modify 
+# srun command to modify 
 srun -N 1 -n 1 -c 1 ./hello_mpi_omp
 
 ```
@@ -86,7 +93,7 @@ In the script, Slurm directives are preceded by ``#SBATCH``, making them appear 
 | Line | Description                                                                                     |
 | :--: | :----------                                                                                     |
 |    1 | Shell interpreter line                                                                          |
-|    2 | OLCF project to charge                                                                          |
+|    2 | Anvil project to charge                                                                         |
 |    3 | Job name                                                                                        |
 |    4 | Job standard output file (``%x`` will be replaced with the job name and ``%j`` with the Job ID) |
 |    5 | Walltime requested (in ``MM:SS`` format). See the table below for other formats.                |
@@ -160,7 +167,8 @@ Let's examine the output of your job and use that example to begin to understand
 
 The compute nodes are composed of a CPU made of several hardware cores that have a few hardware threads each. Most modern HPC nodes also have GPUs, but we will not focus on those yet. 
 
-Below is a picture of the Frontier compute node. 
+TODO: Replace with Anvil!<br>
+Below is a picture of a Frontier compute node. 
 
 
 <br>
@@ -180,7 +188,7 @@ To organize work in parallel, hello_mpi_omp uses MPI tasks and OpenMP threads. T
 If you like, you may look at the code by doing:
 
 ```
-vi hello_mpi-omp.c
+vi hello_mpi_omp.c
 ```
 To close the file from vi do `esc`, followed by `:q`. 
 
@@ -189,14 +197,14 @@ In real HPC applications, MPI tasks and OpenMP processes are used to organize th
 The output of hello_mpi_omp should look like this:
 
 ```
-MPI 000 - OMP 000 - HWT 001 - Node frontier035
+MPI 000 - OMP 000 - HWT 001 - Node a035.anvil.rcac.purdue.edu
 ```
 
-| MPI TaskID   | OpenMP process ID  | Hardware Thread ID | Node ID          |
-| :--------    |:-----------------  | :----------------- | :--------------  |
-| MPI 000      | OMP 000            | HWT 001            | Node frontier035 |
+| MPI TaskID   | OpenMP process ID  | Hardware Thread ID | Node ID                         |
+| :--------    |:-----------------  | :----------------- | :------------------------------ |
+| MPI 000      | OMP 000            | HWT 001            | Node a035.anvil.rcac.purdue.edu |
 
-This means that MPI task 000 and OpenMP process 000 ran on hardware thread 001 on node 35. 
+This means that MPI task 000 and OpenMP process 000 ran on hardware thread 001 on node a035. 
 
 Remember, the example's srun was setup for 1 node (-N 1), 1 MPI task (-n 1), with one core for each MPI task (-c 1) and 1 OpenMP process (export OMP_NUM_THREADS=1) .
 
@@ -228,7 +236,7 @@ where you replace `YOUR-JOB-NAME` and `your-job-ID-number` with the name and num
 
 If you don't see output that looks like, 
 ```
-MPI 000 - OMP 000 - HWT 001 - Node frontier035
+MPI 000 - OMP 000 - HWT 001 - Node a035.anvil.rcac.purdue.edu
 ```
 retrace your steps or ask for help from the instructors. 
 
@@ -259,13 +267,13 @@ Then submit your job with `sbatch submit.sl.
 When your job is done, open the output file (looks like a variation of srun_myjob-397453.out) with 'vi' or a text editor. Does it look like this? :
 
 ```
-MPI 001 - OMP 000 - HWT 009 - Node frontier143
-MPI 004 - OMP 000 - HWT 033 - Node frontier143
-MPI 000 - OMP 000 - HWT 001 - Node frontier143
-MPI 002 - OMP 000 - HWT 017 - Node frontier143
-MPI 003 - OMP 000 - HWT 025 - Node frontier143
-MPI 005 - OMP 000 - HWT 041 - Node frontier143
-MPI 006 - OMP 000 - HWT 049 - Node frontier143
+MPI 001 - OMP 000 - HWT 009 - Node a143.anvil.rcac.purdue.edu
+MPI 004 - OMP 000 - HWT 033 - Node a143.anvil.rcac.purdue.edu
+MPI 000 - OMP 000 - HWT 001 - Node a143.anvil.rcac.purdue.edu
+MPI 002 - OMP 000 - HWT 017 - Node a143.anvil.rcac.purdue.edu
+MPI 003 - OMP 000 - HWT 025 - Node a143.anvil.rcac.purdue.edu
+MPI 005 - OMP 000 - HWT 041 - Node a143.anvil.rcac.purdue.edu
+MPI 006 - OMP 000 - HWT 049 - Node a143.anvil.rcac.purdue.edu
 
 ```
 If so, you successfully ran 7 MPI tasks per node. 
@@ -288,24 +296,20 @@ How many CPU cores are available to each of your MPI tasks? Do you think your co
 
 Submit your job to find out. Look at the output file when you are done.
 
-If you ran on Frontier, your output would look like this: 
+If you ran on Anvil, your output would look like this: 
 
 ```
-WARNING: Requested total thread count and/or thread affinity may result in
-oversubscription of available CPU resources!  Performance may be degraded.
-Explicitly set OMP_WAIT_POLICY=PASSIVE or ACTIVE to suppress this message.
-Set CRAY_OMP_CHECK_AFFINITY=TRUE to print detailed thread-affinity messages.
-MPI 000 - OMP 000 - HWT 001 - Node frontier139
-MPI 000 - OMP 001 - HWT 001 - Node frontier139
-MPI 001 - OMP 000 - HWT 009 - Node frontier139
-MPI 001 - OMP 001 - HWT 009 - Node frontier139
-MPI 002 - OMP 000 - HWT 017 - Node frontier139
-MPI 002 - OMP 001 - HWT 017 - Node frontier139
-MPI 003 - OMP 000 - HWT 025 - Node frontier139
-MPI 003 - OMP 001 - HWT 025 - Node frontier139
+MPI 000 - OMP 000 - HWT 001 - Node a139.anvil.rcac.purdue.edu
+MPI 000 - OMP 001 - HWT 001 - Node a139.anvil.rcac.purdue.edu
+MPI 001 - OMP 000 - HWT 009 - Node a139.anvil.rcac.purdue.edu
+MPI 001 - OMP 001 - HWT 009 - Node a139.anvil.rcac.purdue.edu
+MPI 002 - OMP 000 - HWT 017 - Node a139.anvil.rcac.purdue.edu
+MPI 002 - OMP 001 - HWT 017 - Node a139.anvil.rcac.purdue.edu
+MPI 003 - OMP 000 - HWT 025 - Node a139.anvil.rcac.purdue.edu
+MPI 003 - OMP 001 - HWT 025 - Node a139.anvil.rcac.purdue.edu
 .  .  .    
 ```
-The CPU's cores could easily handle two processes each, in fact, the Frontier cores have two hardware threads each, but the default slrum setting on Frontier is to only schedule one hardware thread per core. This allows each process to have all the resources of the core. So, in the way we have submitted the job, each hardware thread had to handle two processes. You can see this in the example output by the fact that every two OMP processes share one HWT. That is not an ideal situation because the thread would need to wait for one process to finish before it could start running the other. That situation is called oversubscription and the reason for the warnings in my example output. 
+The CPU's cores could easily handle two processes each, in fact, the Anvil cores have two hardware threads each, but the default Slurm setting on Anvil is to only schedule one hardware thread per core. This allows each process to have all the resources of the core. So, in the way we have submitted the job, each hardware thread had to handle two processes. You can see this in the example output by the fact that every two OMP processes share one HWT. That is not an ideal situation because the thread would need to wait for one process to finish before it could start running the other. That situation is called oversubscription and could result in performance degradation.  Note that there us no warning about this condition in my example output (this depends on the specifics of the compiler environment). 
 
 A better plan is to reserve a core for each process in the MPI task. What would you need to change about your current srun line, in submit.sl, to get a core reserved for each process in each MPI task? 
 
@@ -317,7 +321,7 @@ Remember:
 | c      | number of CPU cores per task |
 
 
-Make that change and submit the job again. Check your output to see if the warning is gone and if each OMP process has a unique HWT ID number associated with it in the output. 
+Make that change and submit the job again. Check your output to see if each OMP process has a unique HWT ID number associated with it in the output. 
 
 
 Putting It All Together Exercise
@@ -334,4 +338,4 @@ When you are done, copy the path to one of those output files to the google shee
 
 In summary, we explored the Slurm options for sbatch that allow us to reserve compute nodes via the scheduler. We explored a few of the srun options that control how the parallel job launcher lays out work on the node.  
 
-If you want to learn more, see the Frontier User Documentation's Slurm section, where there are many more examples: [https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#slurm](https://docs.olcf.ornl.gov/systems/frontier_user_guide.html#slurm).
+If you want to learn more, see the Anvil User Documentation's Slurm section, where there are many more examples: [https://www.rcac.purdue.edu/knowledge/anvil/run/examples/slurm](https://www.rcac.purdue.edu/knowledge/anvil/run/examples/slurm).
