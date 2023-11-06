@@ -1,4 +1,4 @@
-CCOMP = cc
+CCOMP = gcc
 CFLAGS = 
 
 run: vector_addition.o

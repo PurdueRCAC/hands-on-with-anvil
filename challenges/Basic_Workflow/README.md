@@ -21,10 +21,10 @@ $ module list
 
 > NOTE: The `$` in the command above represents the "command prompt" for the bash shell and is not part of the command that needs to be executed.
 
-For this example program, we will use the AMD compiler. To use the AMD compiler, load the AMD programming environment by issuing the following command:
+For this example program, we will use the GCC compiler. To use the GCC compiler, load the GCC programming environment by issuing the following command:
 
 ```
-$ module load PrgEnv-amd
+$ module load gcc
 ```
 
 ## Step 2: Compile the Code
@@ -51,7 +51,7 @@ In order to run the executable on Anvil's compute nodes, you need to request acc
 
 The flags given to `srun` define the resources (i.e., number of processors and number of processors per node) available to your program and the processes/threads you want to run on those resources. 
 
-> (For more information on using the `srun` job launcher, please see challenge [srun\_Job\_Launcher](../srun_Job_Launcher))
+> (For more information on using the `srun` job launcher, please see challenge [Srun\_Job\_Launcher](../Srun_Job_Launcher))
 
 &nbsp;
 
@@ -69,8 +69,8 @@ Now that the job has been submitted, you can monitor its progress. Is it running
 $ squeue -u USERNAME
 ```
 
-where `USERNAME` is your username. This will show you the state of your job to determine if it's running, eligible (waiting to run), or blocked. When you no longer see your job listed with this command, you can assume it has finished (or crashed). Once it has finished, you can see the output from the job in the file named `add_vec_cpu-JOBID.out`, where `JOBID` is the unique ID given to you job when you submitted it. 
-List your directoy to verify that `add_vec_cpu-JOBID.out` is present by doing: 
+where `USERNAME` is your username (you can also use `squeue --me` instead). This will show you the state of your job to determine if it's running, eligible (waiting to run), or blocked. When you no longer see your job listed with this command, you can assume it has finished (or crashed). Once it has finished, you can see the output from the job in the file named `add_vec_cpu-JOBID.out`, where `JOBID` is the unique ID given to you job when you submitted it. 
+List your directory to verify that `add_vec_cpu-JOBID.out` is present by doing: 
 ```
 $ ls
 ```
