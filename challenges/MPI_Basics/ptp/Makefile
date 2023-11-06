@@ -1,4 +1,4 @@
-CCOMP = cc
+CCOMP = $(CC)
 CFLAGS =
 
 run: ptp.o
