@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A TRN016
+#SBATCH -A cis230270
 #SBATCH -J ptp_hello
 #SBATCH -o %x-%j.out
 #SBATCH -t 0:10:00

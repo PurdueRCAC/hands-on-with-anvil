@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A TRN###
+#SBATCH -A cis230270
 #SBATCH -J srun_<enter your name here>
 #SBATCH -o %x-%j.out
 #SBATCH -t 10:00
