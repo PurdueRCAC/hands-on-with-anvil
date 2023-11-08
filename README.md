@@ -2,12 +2,11 @@
 
 
 ### What is Anvil?
-Anvil, located at [Oak Ridge National Laboratory](https://rcac.purdue.edu/) in Oak Ridge, TN,  is one of the [world's most powerful supercomputers](https://www.top500.org/system/180047/) dedicated to open scientific research. It has lots of unique architectural features that we'll explore today, including:
+Anvil, located at the [Rosen Center for Advanced Computing](https://rcac.purdue.edu/) at Purdue University is a [top ranked](https://top500.org/system/180085/) dedicated to open scientific research. It has lots of features that we'll explore today, including:
 
-- 64-core AMD “Optimized 3rd Gen EPYC” CPU (x9,408)
-- AMD MI250X GPU (x37,632)
-- Single-Node performance of 212TF (x 9,408)
-- Node-local Memory / "Burst Buffer" of 3.84TB/Node
+- 64-core AMD “Optimized 3rd Gen EPYC” CPUs (x 2,096)
+- NVIDIA A100 GPUs (x64)
+- Single-Node performance of about 5TF (x 1,048)
 
 ### Navigating this Session
 Here you will find the [session agenda](agenda.md) along with various resources
@@ -37,5 +36,5 @@ reference materials outside of what's provided in this repository.
 <hr>
 <br>
 <p align="center">
-  <a href="https://www.rcac.purdue.edu/"><img src="./images/rcac_logo.png" width="400" alt="Oak Ridge Leadership Computing Facility"></a>
+  <a href="https://www.rcac.purdue.edu/"><img src="./images/rcac_logo.png" width="400" alt="Rosen Center for Advanced Computing"></a>
 </p>
