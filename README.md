@@ -28,7 +28,7 @@ reference materials outside of what's provided in this repository.
 
 ### Helpful Links
 
-#### [<img src="./images/anvil_logo_2023.png" width="170" valign="middle" alt="Anvil"/>   Official Anvil User Guide & Documentation](https://docs.rcac.purdue.edu/systems/summit_user_guide.html)
+#### [<img src="./images/anvil_logo_2023.png" width="170" valign="middle" alt="Anvil"/>   Official Anvil User Guide & Documentation](https://www.rcac.purdue.edu/knowledge/anvil)
 
 #### [<img src="./images/SchedMD_Logo_2023.png" width="170" valign="middle" alt="Anvil"/>   SchedMD Slurm Documentation (scheduler)](https://slurm.schedmd.com/documentation.html)
 
