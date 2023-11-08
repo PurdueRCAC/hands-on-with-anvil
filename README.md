@@ -2,7 +2,7 @@
 
 
 ### What is Anvil?
-Anvil, located at the [Rosen Center for Advanced Computing](https://rcac.purdue.edu/) at Purdue University is a [top ranked](https://top500.org/system/180085/) dedicated to open scientific research. It has lots of features that we'll explore today, including:
+Anvil, located at the [Rosen Center for Advanced Computing](https://rcac.purdue.edu/) at Purdue University is a [top ranked](https://top500.org/system/180085/) supercomputer dedicated to open scientific research. It has lots of features that we'll explore today, including:
 
 - 64-core AMD “Optimized 3rd Gen EPYC” CPUs (x 2,096)
 - NVIDIA A100 GPUs (x64)
