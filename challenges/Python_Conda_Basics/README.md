@@ -12,24 +12,15 @@ This hands-on challenge will introduce a user to installing Conda on Anvil, the 
 
 ## Installing Miniconda
 
-Currently, Anvil does NOT have Anaconda/Conda modules, so we'll have to install Conda ourselves.
-More specifically, we'll be installing Miniconda which is a more minimal version of Anaconda that will be quicker to install.
-Luckily, a script was created ahead of time to do this for you!
-All you need to do is run the `install_conda_anvil.sh` script like so:
+Currently, Anvil provides a few different ways to manage Python environments, most commonly by way of Anaconda modules. As new releases of Anaconda are available we add them to the modules but do not remove previous ones to not break existing environments users have created from them.
 
 ```bash
-$ ~/hands-on-with-anvil/misc_scripts/install_conda_anvil.sh
+$ module avail anaconda
 ```
-
->>  ---
-> NOTE: You will ever only need to run the installation script once!
->>  ---
-
-Provided there are no errors (there shouldn't be), you will now have access to your own Miniconda installation!
 
 &nbsp;
 
-## Inspecting and setting up the environment
+## Setting up the environment
 
 First, we will unload all the current modules that you may have previously loaded on Anvil:
 
@@ -37,36 +28,22 @@ First, we will unload all the current modules that you may have previously loade
 $ module reset
 ```
 
-Next, we need to load the gnu compiler module (most Python packages assume use of GCC):
+Next, we need to load the `anaconda` module:
 
 ```bash
-$ module load PrgEnv-gnu
+$ module load anaconda/2021.05-py38
 ```
 
-Next, let's activate your Anvil Miniconda installation:
-
-```bash
-$ source ~/miniconda-anvil-handson/bin/activate base
-```
-
-This puts you in the "`base`" conda environment (your base-level install that came with a few packages).
-Typical best practice is to not install new things into the `base` environment, but to create new environments instead. 
+This puts you in the "`base`" conda environment.
+You will not be able to install new packages into the `base` environment because it is write protected from users. Instead you will want to create your own environments and install packages into them. 
 So, next, we will create a new environment using the `conda create` command:
 
 ```bash
-$ conda create -p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil python=3.9
+$ conda create -n py39-anvil python=3.9
 ```
 
-The "`-p`" flag specifies the desired path and name of your new virtual environment.
-The directory structure is case sensitive, so be sure to insert "<YOUR_PROJECT_ID>" as lowercase.
-Directories will be created if they do not exist already (provided you have write-access in that location).
-Instead, one can solely use the `--name <your_env_name>` flag which will automatically use your `$HOME` directory.
-
->>  ---
-> NOTE: It is highly recommended to create new environments in the "Project Home" directory (on Anvil, this is `/ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>`).
-> This space avoids purges, allows for potential collaboration within your project, and works better with the compute nodes.
-> It is also recommended, for convenience, that you use environment names that indicate the hostname, as virtual environments created on one system will not necessarily work on others.
->>  ---
+The "`-n`" flag specifies the desired name of your new virtual environment.
+This will install the environment into your home directory in a specific location. Instead, one can use the `-p <path>` option which will install to some other desired location (like your project directory).
 
 After executing the `conda create` command, you will be prompted to install "the following NEW packages" -- type "y" then hit Enter/Return.
 Downloads of the fresh packages will start and eventually you should see something similar to:
@@ -78,21 +55,22 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
+#     $ conda activate py39-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Anvil, we will be using `source activate` and `source deactivate` instead of `conda activate` and `conda deactivate`.
+<!-- Please note, more recent releases of the Anaconda distribution for Python, specifically the `conda` package manager, now provide an activation mechanism that lets you invoke `conda activate x` instead of `source activate x`. While this improves the overall experience of most users and allows for a consistent interface across platforms, it is problematic on an HPC cluster. It is problematic because it asks you to first invoke `conda init $SHELL` before it will allow you to call `conda activate` on any of your environments. When you run `conda init` all that happens is it inserts a short snippet of code into your shell profile (e.g., `~/.bashrc`) to automatically activate the base environment every time you log in. This is convenient on your personal machine but problematic on an HPC resource where you will likely need to do things other than use that particular Anaconda or worse, it sources an expensive intialization script for every file transfer. -->
+
 Let's activate our new environment:
 
 ```bash
-$ source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
+$ conda activate py39-anvil
 ```
 
-The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
+The name of your environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with `conda env list` again, you should see that the `*` marker has moved to your newly activated environment:
 
 ```
@@ -100,8 +78,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py39-anvil
-base                     /home/<YOUR_USER_ID>/miniconda-anvil-handson
+py39-anvil          *  /home/<user>/.conda/envs/py39-anvil
+base                   /apps/.../anaconda/2020.05-py38
 ```
 
 &nbsp;
@@ -117,9 +95,9 @@ However, building from source means you need to take care of some of the depende
 In Anvil's case, this means we need to load the `openblas` module.
 Pip is available to use after installing Python into your conda environment, which we have already done.
 
->>  ---
+
 > NOTE: Because issues can arise when using conda and pip together (see link in [Additional Resources Section](#refs)), it is recommended to do this only if absolutely necessary.
->>  ---
+
 
 To build a package from source, use `pip install --no-binary=<package_name> <package_name>`:
 
@@ -160,9 +138,7 @@ Congratulations, you have just installed an optimized version of NumPy, now let'
 Let's run a small script to test that things installed properly.
 Since we are running a small test, we can do this without having to run on a compute node. 
 
->>  ---
 > NOTE: Remember, at larger scales both your performance and your fellow users' performance will suffer if you do not run on the compute nodes.
->>  ---
 
 It is always highly recommended to run on the compute nodes (through the use of a batch job or interactive batch job).
 
@@ -178,9 +154,8 @@ You are using NumPy 1.26.0
 
 Congratulations, you have just created your own Python environment and ran on one of the fastest computers in the world!
 
->>  ---
+
 > Note: If you're doing this challenge for the certificate, you can submit your Python environment for completion. See "Exporting (sharing) an environment" tip below of how to export your environment to a file.
->>  ---
 
 &nbsp;
 
@@ -194,8 +169,8 @@ Congratulations, you have just created your own Python environment and ran on on
     An example for cloning the base environment into your `$HOME` directory on Anvil is provided below:
 
     ```bash
-    $ conda create -p /home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil --clone base
-    $ source activate /home/<YOUR_USER_ID>/.conda/envs/baseclone-anvil
+    $ conda create -n baseclone-anvil --clone base
+    $ conda activate baseclone-anvil
     ```
 
 * Deleting an environment:
@@ -203,7 +178,7 @@ Congratulations, you have just created your own Python environment and ran on on
     If for some reason you need to delete an environment, you can execute the following:
 
     ```bash
-    $ conda env remove -p /path/to/your/env
+    $ conda env remove -n <name>
     ```
 
 * Exporting (sharing) an environment:
@@ -215,7 +190,7 @@ Congratulations, you have just created your own Python environment and ran on on
     To export your environment list:
     
     ```bash
-    $ source activate my_env
+    $ conda activate my_env
     $ conda env export > environment.yml
     ```
     
@@ -236,16 +211,18 @@ Congratulations, you have just created your own Python environment and ran on on
     ```
 
     On Anvil, the default location is your `$HOME` directory.
-    If you plan to frequently create environments in a different location than the default (such as `/ccs/proj/...`), then there is an option to add directories to the `envs_dirs` list.
+    If you plan to frequently create environments in a different location than the default (such as `/anvil/project/...`), then there is an option to add directories to the `envs_dirs` list.
     To do so, you must execute:
 
     ```bash
-    $ conda config --append envs_dirs /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil
+    $ conda config --append envs_dirs /anvil/project/<project>/<user>/conda_envs/anvil
     ```
     
+    > Note: On Anvil you can see your allocation with the `myproject` command as well as other locations with the `myquota` command.
+
     This will create a `.condarc` file in your `$HOME` directory if you do not have one already, which will now contain this new envs_dirs location.
-    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/env_name` flag and specifying the full path to the environment.
-    For example, you can do `source activate py3711-anvil` instead of `source activate /ccs/proj/<YOUR_PROJECT_ID>/<YOUR_USER_ID>/conda_envs/anvil/py3711-anvil`.
+    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /anvil/project/<project>/<user>/conda_envs/env_name` option and specifying the full path to the environment.
+    For example, you can do `conda activate py3711-anvil` instead of `conda activate /anvil/project/<project>/<user>/conda_envs/py3711-anvil`.
 
 &nbsp;
 
@@ -308,8 +285,8 @@ Congratulations, you have just created your own Python environment and ran on on
 * Activating/Deactivating an environment:
 
     ```bash
-    $ source activate my_env
-    $ source deactivate # deactivates the current environment
+    $ conda activate my_env
+    $ conda deactivate # deactivates the current environment
     ```
 
 * Installing/Uninstalling packages:
