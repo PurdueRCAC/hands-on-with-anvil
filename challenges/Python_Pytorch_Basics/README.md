@@ -106,8 +106,6 @@ Finally, we will also want to install `matplotlib` for the plotting functions in
 $ conda install matplotlib
 ```
 
-Note that we also installed matplotlib as it will be needed for plotting functions in the CNN.
-
 &nbsp;
 
 ## 2. <a name="ptorch"></a>Getting Started With PyTorch
