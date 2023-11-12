@@ -1,19 +1,20 @@
 #!/bin/bash
-#SBATCH -A TRN016
+#SBATCH -A cis230270
+#SBATCH -p shared
 #SBATCH -J galaxy
 #SBATCH -o %x-%j.out
 #SBATCH -t 0:10:00
-#SBATCH -p batch
 #SBATCH -N 1
-
-unset SLURM_EXPORT_ENV
+#SBATCH -n 8
 
 date
 
-module load PrgEnv-gnu
-module load hdf5
+module reset
+module load anaconda/2020.05-py38
+module list
 
-source ~/miniconda-anvil-handson/bin/activate base
-source activate ~/.conda/envs/h5pympi-anvil
+conda activate py3.10-galaxy
 
-srun -n8 python3 -u galaxy.py
+srun python3 -u galaxy.py
+
+date

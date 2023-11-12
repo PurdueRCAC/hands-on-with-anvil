@@ -35,34 +35,26 @@ Because of this, it is extremely important that all the modules and conda enviro
 First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
+> Note: It is advisable to restart your shell to ensure a clean environment.
+
 ```bash
 $ cd ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5
-$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
 $ module reset
+$ module load hdf5
 ```
 
-The `source deactivate_envs.sh` command is only necessary if you already have the Python module loaded.
-The script unloads all of your previously activated conda environments, and no harm will come from executing the script if that does not apply to you.
-
-Next, we will load the gnu compiler module (most Python packages assume GCC), hdf5 module (necessary for h5py):
+Next, we will load the Anaconda module
 
 ```bash
-$ module load PrgEnv-gnu
-$ module load hdf5
-$ source ~/miniconda-anvil-handson/bin/activate base
+$ module load anaconda/2020.05-py38
 ```
 
 We are in a "base" conda environment, but we need to create a new environment using the `conda create` command.
 Because h5py depends on NumPy, and our challenge depends on other packages (scipy and matplotlib), we will install all of them at once:
 
 ```
-$ conda create -p ~/.conda/envs/h5pympi-anvil python=3.9 libssh numpy scipy matplotlib -c conda-forge
+$ conda create -n py3.10-galaxy python=3.10 libssh numpy scipy matplotlib -c conda-forge
 ```
-
->> ---
-> NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
->> ---
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
 
@@ -73,17 +65,17 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate ~/.conda/envs/h5pympi-anvil
+#     $ conda activate py3.10-galaxy
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
+Let's activate the environment:
 
 ```bash
-$ source activate ~/.conda/envs/h5pympi-anvil
+$ conda activate py3.10-galaxy
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment. 
@@ -94,8 +86,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /home/<YOUR_USER_ID>/.conda/envs/h5pympi-anvil
-base                     /home/<YOUR_USER_ID>/miniconda-anvil-handson
+                      *  /home/.conda/envs/2020.05-py38/py3.10-galaxy
+base                     /apps/.../anaconda/2020.05-py38
 ```
 
 ## Installing mpi4py
@@ -116,7 +108,7 @@ If everything goes well, you should see a "Successfully installed mpi4py" messag
 Next, we are finally ready to install h5py from source:
 
 ```bash
-$ HDF5_MPI="ON" CC=cc HDF5_DIR=${OLCF_HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
+$ HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_ROOT} pip install --no-cache-dir --no-binary=h5py h5py
 ```
 
 The `HDF5_MPI` flag is the key to telling pip to build h5py with parallel support, while the `CC` flag makes sure that we are using the correct C wrapper for MPI.
@@ -131,7 +123,7 @@ We will test our build by trying to write an HDF5 file in parallel using 42 MPI 
 First, change directories to your Orion scratch area and copy over the python and batch scripts:
 
 ```bash
-$ cd /lustre/orion/<PROJECT ID>/scratch/<USER ID>
+$ cd /anvil/scratch/<user>
 $ mkdir h5py_test
 $ cd h5py_test
 $ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/hello_mpi.py .
@@ -231,7 +223,7 @@ The results of the simulation will look something like this:
 First, similar to before, change directories to your GPFS scratch area and copy over the python and batch scripts:
 
 ```bash
-$ cd /lustre/orion/<PROJECT ID>/scratch/<USER ID>
+$ cd /anvil/scratch/<user>
 $ mkdir galaxy_challenge
 $ cd galaxy_challenge
 $ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/galaxy.py .
