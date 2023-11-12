@@ -17,7 +17,8 @@ PyTorch emphasizes the flexibility and human-readableness of Python and allows d
 Think about the simplicity, structure, and usefulness of NumPy and its arrays, but more geared toward ML/DL algorithms and its tensors -- that's what PyTorch is.
 Compared to other frameworks and libraries, it is one of the more "beginner friendly" ML/DL packages due to its dynamic and familiar "Pythonic" nature.
 PyTorch is also useful when GPUs are involved because of its strong GPU acceleration ability.
-On Anvil, PyTorch is able to take advantage of the many AMD GPUs available on the system.
+
+> Note: Anvil has a special GPU partition with many NVIDIA A100 GPUs that work very well with libraries like pytorch; however, because this workshop's allocation `cis230270` is not granted on this resource, we will instead make use of the `cpuonly` variant of pytorch. To be clear, the 128-core nodes on Anvil are still very capable in this regard!
 
 In this challenge, you will:
 
@@ -55,33 +56,15 @@ First, we will unload all the current modules that you may have previously loade
 Assuming you cloned the repository in your home directory:
 
 ```bash
-$ cd ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics
-$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
 $ module reset
-```
-
-The `source deactivate_envs.sh` command is only necessary if you already have the Python module loaded.
-The script unloads all of your previously activated conda environments, and no harm will come from executing the script if that does not apply to you.
-
-Next, we will load the gnu compiler module (most Python packages assume GCC) and the GPU module (necessary for using PyTorch on the GPU):
-
-```bash
-$ module load PrgEnv-gnu
-$ module load amd-mixed/5.6.0
-$ module load craype-accel-amd-gfx90a
-$ source ~/miniconda-anvil-handson/bin/activate base
+$ module load anaconda/2020.05-py38
 ```
 
 We loaded the "base" conda environment, but we need to create a new environment using the conda create command:
 
 ```bash
-$ conda create -p ~/.conda/envs/torch-anvil python=3.10
+$ conda create -n py3.10-torch python=3.10 pytorch torchvision torchaudio cpuonly -c pytorch
 ```
-
->>  ---
-> NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
->>  ---
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
 
@@ -92,20 +75,20 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate ~/.conda/envs/torch-anvil
+#     $ conda activate py3.10-torch
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
+Activate the new environment:
 
 ```bash
-$ source activate ~/.conda/envs/torch-anvil
+$ conda activate py3.10-torch
 ```
 
-The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
+The name of the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
 If you check with `conda env list`, you should see that the `*` marker is next to your new environment, which means that it is currently active:
 
 ```bash
@@ -113,15 +96,14 @@ $ conda env list
 
 # conda environments:
 #
-                      * /home/<YOUR_USER_ID>/.conda/envs/torch-anvil
-base                    /home/<YOUR_USER_ID>/miniconda-anvil-handson
+                      * /home/<user>/.conda/envs/2021.05-py38/py3.10-torch
+base                    /apps/.../anaconda/2020.05-py38
 ```
 
-Finally, we can install PyTorch using `pip` in our new conda environment:
+Finally, we will also want to install `matplotlib` for the plotting functions in the CNN.
 
 ```bash
-$ pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.6
-$ pip install matplotlib
+$ conda install matplotlib
 ```
 
 Note that we also installed matplotlib as it will be needed for plotting functions in the CNN.
@@ -137,10 +119,9 @@ We will be following a slightly modified version of that walkthrough on Anvil.
 Let's get started by importing PyTorch in a Python prompt:
 
 ```python
-$ python3
+$ python
 
-Python 3.9.13 (main, Aug 10 2022, 17:20:06) 
-[GCC 9.3.0 20200312 (Cray Inc.)] on linux
+Python 3.10.13 | packaged by conda-forge | (main, Oct 26 2023, 18:07:37) [GCC 12.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import torch
 >>> import numpy as np
@@ -217,6 +198,8 @@ True
 >>> print(f"Device tensor is stored on: {tensor.device}")
 Device tensor is stored on: cuda:0
 ```
+
+> Note: If you are not on a GPU node this will note work.
 
 Just like arrays, tensors can be manipulated via arithmetic and sliced:
 
@@ -719,7 +702,7 @@ You'll be submitting a job to run on a compute node to train your network.
 However, before asking for a compute node, change into your scratch directory and copy over the relevant files.
 
 ```bash
-$ cd /lustre/orion/[projid]/scratch/[userid]
+$ cd /anvil/scratch/<user>
 $ mkdir pytorch_test
 $ cd pytorch_test
 $ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/download_data.py ./download_data.py
@@ -744,9 +727,8 @@ More specifically:
 If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Anvil by doing:
 
 ```bash
-$ module load imagemagick
-$ display last_batch.png
-$ display overall_results.png
+$ xdg-open last_batch.png
+$ xdg-open overall_results.png
 ```
 
 Opening the images is **not required**, as all the same statistics will be printed to your `.out` file.
@@ -757,7 +739,7 @@ After you complete the challenge, you can transfer these plots to your computer 
 
 To do this challenge:
 
-0. Make sure you copied over the scripts and are in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory (see beginning of this section).
+0. Make sure you copied over the scripts and are in your `/anvil/scratch/<user>/pytorch_test` directory (see beginning of this section).
 
 1. Run the `download_data.py` script to download the CIFAR-10 dataset. This is necessary because the compute nodes won't be able to download it during your batch job when running `cnn.py`. If successful, you'll see a directory named `data` in your current directory.
 
@@ -765,7 +747,7 @@ To do this challenge:
     $ python3 download_data.py
     ```
     > Note: You only need to run this script once.
-    > Warning: This script MUST be run in the same directory you plan to run `cnn.py` (in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory)
+    > Warning: This script MUST be run in the same directory you plan to run `cnn.py` (in your `/anvil/scratch/<user>/pytorch_test` directory)
 
 2. Use your favorite editor to change `num_epochs` and `batch_size` to tune your network (lines 119 and 120, marked by "CHANGE-ME"). For example:
 
