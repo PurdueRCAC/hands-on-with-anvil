@@ -1,5 +1,5 @@
 #!/bin/bash 
-#SBATCH -A cis230138
+#SBATCH -A cis230270
 #SBATCH -J add_vec_cpu
 #SBATCH -o %x-%j.out
 #SBATCH -t 00:10:00
