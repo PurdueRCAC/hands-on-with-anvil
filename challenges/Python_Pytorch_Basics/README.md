@@ -57,7 +57,7 @@ Assuming you cloned the repository in your home directory:
 
 ```bash
 $ module reset
-$ module load anaconda/2020.05-py38
+$ module load anaconda/2021.05-py38
 ```
 
 We loaded the "base" conda environment, but we need to create a new environment using the conda create command:
@@ -97,7 +97,7 @@ $ conda env list
 # conda environments:
 #
                       * /home/<user>/.conda/envs/2021.05-py38/py3.10-torch
-base                    /apps/.../anaconda/2020.05-py38
+base                    /apps/.../anaconda/2021.05-py38
 ```
 
 Finally, we will also want to install `matplotlib` for the plotting functions in the CNN.

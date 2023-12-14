@@ -10,7 +10,7 @@
 date
 
 module reset
-module load anaconda/2020.05-py38
+module load anaconda/2021.05-py38
 
 conda activate py3.10-galaxy
 

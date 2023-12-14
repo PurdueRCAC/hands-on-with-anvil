@@ -46,7 +46,7 @@ $ module load hdf5
 Next, we will load the Anaconda module
 
 ```bash
-$ module load anaconda/2020.05-py38
+$ module load anaconda/2021.05-py38
 ```
 
 We are in a "base" conda environment, but we need to create a new environment using the `conda create` command.
@@ -86,8 +86,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /home/.conda/envs/2020.05-py38/py3.10-galaxy
-base                     /apps/.../anaconda/2020.05-py38
+                      *  /home/.conda/envs/2021.05-py38/py3.10-galaxy
+base                     /apps/.../anaconda/2021.05-py38
 ```
 
 ## Installing mpi4py
