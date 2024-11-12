@@ -9,10 +9,10 @@
 date
 
 module reset
-module load anaconda/2021.05-py38
+module load anaconda/2024.02-py311
 module list
 
-conda activate py3.10-torch
+conda activate py3.12-torch
 python3 -u cnn.py
 
 date

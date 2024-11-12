@@ -46,6 +46,7 @@ Table of Contents:
 	* [Testing Loop](#test-loop)
 * [Challenge: Tuning a CNN](#chall)
 	* [Leaderboard](#leaderboard)
+* [Environment Information](#install)
 * [Additional Resources](#resources)
 
 &nbsp;
@@ -57,13 +58,13 @@ Assuming you cloned the repository in your home directory:
 
 ```bash
 $ module reset
-$ module load anaconda/2021.05-py38
+$ module load anaconda/2024.02-py311
 ```
 
 We loaded the "base" conda environment, but we need to create a new environment using the conda create command:
 
 ```bash
-$ conda create -n py3.10-torch python=3.10 pytorch torchvision torchaudio cpuonly -c pytorch
+$ conda create -n py3.12-torch python=3.12 pytorch torchvision torchaudio cpuonly -c pytorch
 ```
 
 After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
@@ -75,7 +76,7 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate py3.10-torch
+#     $ conda activate py3.12-torch
 #
 # To deactivate an active environment, use
 #
@@ -85,19 +86,27 @@ Executing transaction: done
 Activate the new environment:
 
 ```bash
-$ conda activate py3.10-torch
+$ conda activate py3.12-torch
 ```
 
 The name of the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
 If you check with `conda env list`, you should see that the `*` marker is next to your new environment, which means that it is currently active:
+
 
 ```bash
 $ conda env list
 
 # conda environments:
 #
-                      * /home/<user>/.conda/envs/2021.05-py38/py3.10-torch
-base                    /apps/.../anaconda/2021.05-py38
+                      * /home/<user>/.conda/envs/2024.02-py311/py3.12-torch
+base                    /apps/.../anaconda/2024.02-py311
+```
+
+If you run `which python3`, you should see that you're properly in the new environment:
+
+```bash
+(py3.12-torch) $ which python3
+/home/<user>/.conda/envs/2024.02-py311/py3.12-torch/bin/python3
 ```
 
 Finally, we will also want to install `matplotlib` for the plotting functions in the CNN.
@@ -108,7 +117,7 @@ $ conda install matplotlib
 
 &nbsp;
 
-## 2. <a name="ptorch"></a>Getting Started With PyTorch
+## 2. <a name="pytorch"></a>Getting Started With PyTorch
 
 Before we jump into the PyTorch challenge script provided in this repository, let's go over some of the basics.
 The developers provide a great introduction to using PyTorch on their website under the [PyTorch Tutorials](https://pytorch.org/tutorials/beginner/basics/intro.html) section.
@@ -119,7 +128,7 @@ Let's get started by importing PyTorch in a Python prompt:
 ```python
 $ python
 
-Python 3.10.13 | packaged by conda-forge | (main, Oct 26 2023, 18:07:37) [GCC 12.3.0] on linux
+Python 3.12.7 | packaged by conda-forge | (main, Oct  4 2024, 16:05:46) [GCC 13.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import torch
 >>> import numpy as np
@@ -196,8 +205,6 @@ True
 >>> print(f"Device tensor is stored on: {tensor.device}")
 Device tensor is stored on: cuda:0
 ```
-
-> Note: If you are not on a GPU node this will note work.
 
 Just like arrays, tensors can be manipulated via arithmetic and sliced:
 
@@ -594,8 +601,7 @@ model = ConvNet().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
-if torch.cuda.is_available():
-    torch.cuda.synchronize()
+torch.cuda.synchronize()
 t1=tp.time()
 
  # Training loop
@@ -619,8 +625,7 @@ for epoch in range(num_epochs):
         if (i+1) % 500 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
 
-if torch.cuda.is_available():
-    torch.cuda.synchronize()
+torch.cuda.synchronize()
 t2=tp.time()
 print('Finished Training')
 ```
@@ -702,12 +707,12 @@ You'll be submitting a job to run on a compute node to train your network.
 However, before asking for a compute node, change into your scratch directory and copy over the relevant files.
 
 ```bash
-$ cd /anvil/scratch/<user>
+$ cd /lustre/orion/[projid]/scratch/[userid]
 $ mkdir pytorch_test
 $ cd pytorch_test
-$ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/download_data.py ./download_data.py
-$ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/cnn.py ./cnn.py
-$ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/submit_cnn.sbatch ./submit_cnn.sbatch
+$ cp ~/hands-on-with-Frontier-/challenges/Python_Pytorch_Basics/download_data.py ./download_data.py
+$ cp ~/hands-on-with-Frontier-/challenges/Python_Pytorch_Basics/cnn.py ./cnn.py
+$ cp ~/hands-on-with-Frontier-/challenges/Python_Pytorch_Basics/submit_cnn.sbatch ./submit_cnn.sbatch
 ```
 
 The goal of this challenge is to achieve an overall network accuracy of 60% or greater with a learning rate of 0.001 within an hour of compute time.
@@ -724,22 +729,23 @@ More specifically:
 * `last_batch.png`: Shows you the last batch of animal images to get tested by the network. The pictures are titled by their actual classification and also include what the network guessed the animal was.
 * `overall_results.png`: Bar charts of how accurate your network was at predicting each class of animal. This includes your overall network accuracy, identification success (e.g., number of frogs correct divided by number of frog images), and prediction success (e.g., number of frogs correct divided by number of times GUESSED "frog").
 
-If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Anvil by doing:
+If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Frontier by doing:
 
 ```bash
-$ xdg-open last_batch.png
-$ xdg-open overall_results.png
+$ module load imagemagick
+$ display last_batch.png
+$ display overall_results.png
 ```
 
 Opening the images is **not required**, as all the same statistics will be printed to your `.out` file.
 
-> Note: You can only open the images if you connected to Anvil with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@anvil.rcac.purdue.edu`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
+> Note: You can only open the images if you connected to Frontier with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@frontier.olcf.ornl.gov`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
 
 After you complete the challenge, you can transfer these plots to your computer with Globus, `scp`, or `sftp` to keep as "souvenirs" from this challenge.
 
 To do this challenge:
 
-0. Make sure you copied over the scripts and are in your `/anvil/scratch/<user>/pytorch_test` directory (see beginning of this section).
+0. Make sure you copied over the scripts and are in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory (see beginning of this section).
 
 1. Run the `download_data.py` script to download the CIFAR-10 dataset. This is necessary because the compute nodes won't be able to download it during your batch job when running `cnn.py`. If successful, you'll see a directory named `data` in your current directory.
 
@@ -747,7 +753,7 @@ To do this challenge:
     $ python3 download_data.py
     ```
     > Note: You only need to run this script once.
-    > Warning: This script MUST be run in the same directory you plan to run `cnn.py` (in your `/anvil/scratch/<user>/pytorch_test` directory)
+    > Warning: This script MUST be run in the same directory you plan to run `cnn.py` (in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory)
 
 2. Use your favorite editor to change `num_epochs` and `batch_size` to tune your network (lines 119 and 120, marked by "CHANGE-ME"). For example:
 
@@ -776,7 +782,7 @@ To do this challenge:
 
 Thanks for following along and attempting the challenge!
 If you liked this challenge, I suggest exploring [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html) and [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html) for speeding up training.
-Our OLCF analytics team also made some nice overview examples of [Distributed Deep Learning on Summit](https://code.purdue.edu/rcac-analytics/summit/distributed-deep-learning-examples/).
+Our OLCF analytics team also made some nice overview examples of [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/).
 If you liked PyTorch I also suggest taking a loot at [PyTorch Lightning](https://www.pytorchlightning.ai/). 
 
 ### 5.1 <a name="leaderboard"></a>Leaderboard
@@ -811,7 +817,7 @@ Extra information:
 
 * [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html)
 * [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
-* [Distributed Deep Learning on Summit](https://code.purdue.edu/rcac-analytics/summit/distributed-deep-learning-examples/)
+* [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/)
 * [PyTorch Lightning](https://www.pytorchlightning.ai/)
 
 

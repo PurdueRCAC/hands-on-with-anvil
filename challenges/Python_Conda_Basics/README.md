@@ -1,7 +1,7 @@
 # Python: Conda Basics
 
 In high-performance computing, [Python](https://www.python.org/) is heavily used to analyze scientific data on the system. 
-Various Python installations and scientific packages need to be installed to analyze data for our users. These Python installations can become difficult to manage on an HPC system as the programming environment is complicated.  [Conda](https://conda.io/projects/conda/en/latest/index.html), a package and virtual environment manager from the [Anaconda](https://www.anaconda.com/) distribution, helps alleviate these issues. 
+Various Python installations and scientific packages need to be installed to analyze data for our users. These Python installations can become difficult to manage on an HPC system as the programming environment is complicated.  [Conda](https://conda.io/projects/conda/en/latest/index.html), a package and virtual environment manager from the [Anaconda](https://www.anaconda.com/) distribution, helps alleviate these issues. [Miniforge](https://github.com/conda-forge/miniforge) is an open source version of Miniconda, which is what the OLCF crash course will use to be able to utilize conda environments.
 
 Conda allows users to easily install different versions of binary software packages and any required libraries appropriate for their computing platform.
 The versatility of conda allows a user to essentially build their own isolated Python environment, without having to worry about clashing dependencies and other system installations of Python.
@@ -31,7 +31,7 @@ $ module reset
 Next, we need to load the `anaconda` module:
 
 ```bash
-$ module load anaconda/2021.05-py38
+$ module load anaconda/2024.02-py311
 ```
 
 This puts you in the "`base`" conda environment.
@@ -285,8 +285,8 @@ Congratulations, you have just created your own Python environment and ran on on
 * Activating/Deactivating an environment:
 
     ```bash
-    $ conda activate my_env
-    $ conda deactivate # deactivates the current environment
+    $ source activate my_env
+    $ source deactivate # deactivates the current environment
     ```
 
 * Installing/Uninstalling packages:
