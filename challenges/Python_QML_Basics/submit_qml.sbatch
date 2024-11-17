@@ -4,7 +4,7 @@
 #SBATCH -o %x-%j.out
 #SBATCH -N 1
 #SBATCH -t 0:20:00
-#SBATCH -p batch
+#SBATCH -p wholenode
 
 # Only necessary if submitting like: sbatch --export=NONE ... (recommended)
 # Do NOT include this line when submitting without --export=NONE

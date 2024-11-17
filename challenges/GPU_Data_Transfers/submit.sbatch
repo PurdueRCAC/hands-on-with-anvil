@@ -3,7 +3,7 @@
 #SBATCH -J add_vec_cpu
 #SBATCH -o %x-%j.out
 #SBATCH -t 00:10:00
-#SBATCH -p batch
+#SBATCH -p wholenode
 #SBATCH -N 1
 
 module load PrgEnv-amd

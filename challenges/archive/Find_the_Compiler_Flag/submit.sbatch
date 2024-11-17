@@ -3,7 +3,7 @@
 #SBATCH -J add_vec_acc
 #SBATCH -o %x-%j.out
 #SBATCH -t 0:10:00
-#SBATCH -p batch
+#SBATCH -p wholenode
 #SBATCH -N 1
 
 date
