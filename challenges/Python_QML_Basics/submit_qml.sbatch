@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A TRN001
+#SBATCH -A cis230270
 #SBATCH -J qml_basics
 #SBATCH -o %x-%j.out
 #SBATCH -N 1

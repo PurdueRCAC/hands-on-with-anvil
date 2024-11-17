@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -A TRN001
+#SBATCH -A cis230270
 #SBATCH -J 06_gpu
 #SBATCH -o %x-%j.out
 #SBATCH -t 0:10:00
