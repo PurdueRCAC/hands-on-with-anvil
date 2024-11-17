@@ -707,7 +707,7 @@ You'll be submitting a job to run on a compute node to train your network.
 However, before asking for a compute node, change into your scratch directory and copy over the relevant files.
 
 ```bash
-$ cd /lustre/orion/[projid]/scratch/[userid]
+$ cd /anvil/scratch/<x-userid>
 $ mkdir pytorch_test
 $ cd pytorch_test
 $ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/download_data.py ./download_data.py
