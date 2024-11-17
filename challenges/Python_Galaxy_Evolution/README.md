@@ -40,8 +40,6 @@ Assuming you cloned the repository in your home directory:
 
 ```bash
 $ cd ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution
-$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
-$ cd ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5
 $ module reset
 $ module load hdf5
 ```
@@ -89,8 +87,8 @@ $ conda env list
 
 # conda environments:
 #
-                      *  /home/.conda/envs/2021.05-py38/py3.10-galaxy
-base                     /apps/.../anaconda/2021.05-py38
+                      *  /home/.conda/envs/2024.02-py311/py3.10-galaxy
+base                     /apps/.../anaconda/2024.02-py311
 ```
 
 ## Installing mpi4py
@@ -128,10 +126,10 @@ First, change directories to your Anvil scratch area and copy over the python an
 $ cd /anvil/scratch/<user>
 $ mkdir h5py_test
 $ cd h5py_test
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/hello_mpi.py .
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/hdf5_parallel.py .
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/submit_hello.sbatch .
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/submit_h5py.sbatch .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/hello_mpi.py .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/hdf5_parallel.py .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/submit_hello.sbatch .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/submit_h5py.sbatch .
 ```
 
 Let's test that mpi4py is working properly first by executing the example Python script "hello_mpi.py".
@@ -228,9 +226,9 @@ First, similar to before, change directories to your Anvil scratch area and copy
 $ cd /anvil/scratch/<user>
 $ mkdir galaxy_challenge
 $ cd galaxy_challenge
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/galaxy.py .
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/generate_animation.py .
-$ cp ~/hands-on-with-anvil/challenges/Python_Parallel_HDF5/submit_galaxy.sbatch .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/galaxy.py .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/generate_animation.py .
+$ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/submit_galaxy.sbatch .
 ```
 
 The two scripts of interest are called `galaxy.py` and `generate_animation.py`.

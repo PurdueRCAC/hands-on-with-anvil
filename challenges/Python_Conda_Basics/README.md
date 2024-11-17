@@ -79,7 +79,7 @@ $ conda env list
 # conda environments:
 #
 py39-anvil          *  /home/<user>/.conda/envs/py39-anvil
-base                   /apps/.../anaconda/2021.05-py38
+base                   /apps/.../anaconda/2024.02-py311
 ```
 
 &nbsp;
