@@ -265,7 +265,7 @@ Elapsed time loop (s)   : 40.64969682693481
 Elapsed time library (s): 30.79406523704529
 
 ```
-From the results, we can see we've achieved a 350x speedup relative to our serial version of the matrix-multiply loop. 
+From the results, we can see we've achieved a 140x speedup relative to our serial version of the matrix-multiply loop. 
 
 However, in our current version of the code, we are only parallelizing the outermost `for` loop in the triply-nested loop, but the middle loop can also be parallelized (it's possible to parallelize the innermost loop too but we will not do so here). This can be accomplished in multiple ways, but for simplicity, we'll just append `collapse(2)` to the `parallel for` directive:
 
@@ -288,7 +288,7 @@ However, in our current version of the code, we are only parallelizing the outer
     }
 ```
 
-This `collapse` clause tells the compiler to collapse the outer 2 loops and treat them as a single loop, which also causes the directive to be applied to the single "combined" loop. Now add this in to the code, recompile, and run the program. It should give you an additional speedup, for a total of >1000x speedup:
+This `collapse` clause tells the compiler to collapse the outer 2 loops and treat them as a single loop, which also causes the directive to be applied to the single "combined" loop. Now add this in to the code, recompile, and run the program. It should give you an additional speedup, for a total of >180x speedup for the loop:
 
 ```
 Elapsed time total (s)  : 64.92484593391418
