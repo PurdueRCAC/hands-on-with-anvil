@@ -243,7 +243,9 @@ Then load the following modules:
 module purge
 module load modtree/gpu
 module load nvhpc
-module load openblas```
+module load openblas
+
+```
 
 Now add the OpenMP directives above to the serial version of the code.
 
@@ -286,7 +288,7 @@ However, in our current version of the code, we are only parallelizing the outer
     }
 ```
 
-This `collapse` clause tells the compiler to collapse the outer 2 loops and treat them as a single loop, which also causes the directive to be applied to the single "combined" loop. Now add this in to the code, recompile, and run the program. It should give you an additional ~3x speedup, for a total of >1000x speedup:
+This `collapse` clause tells the compiler to collapse the outer 2 loops and treat them as a single loop, which also causes the directive to be applied to the single "combined" loop. Now add this in to the code, recompile, and run the program. It should give you an additional speedup, for a total of >1000x speedup:
 
 ```
 Elapsed time total (s)  : 64.92484593391418
