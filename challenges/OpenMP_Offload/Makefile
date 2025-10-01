@@ -1,5 +1,5 @@
-COMP  = cc
-FLAGS = -fopenmp
+COMP  =nvc
+FLAGS = -fopenmp -mp=gpu -Minfo=accel 
 
 INCLUDES  = -I${OLCF_OPENBLAS_ROOT}/include
 LIBRARIES = -L${OLCF_OPENBLAS_ROOT}/lib -lopenblas
