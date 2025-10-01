@@ -240,10 +240,10 @@ $ cd ~/hands-on-with-anvil/challenges/OpenMP_Offload
 Then load the following modules:
 
 ```bash
-$ module load PrgEnv-amd
-$ module load craype-accel-amd-gfx90a
-$ module load openblas
-```
+module purge
+module load modtree/gpu
+module load nvhpc
+module load openblas```
 
 Now add the OpenMP directives above to the serial version of the code.
 
@@ -258,11 +258,11 @@ $ sbatch submit.sbatch
 You can monitor the progress of your job by issuing the command `sacct -u USERNAME`, where `USERNAME` should be replaced with your username. Once the job finishes, you can find the result in the output file, `mat_mul-JOBID.out`. If successful, the results should show the timing output of the job, which should look something similar to this:
 
 ```
-Elapsed time total (s)  : 74.04765627099914
-Elapsed time loop (s)   : 16.28946080500100
-Elapsed time library (s): 51.09464657500212
-```
+Elapsed time total (s)  : 72.93954205513000
+Elapsed time loop (s)   : 40.64969682693481
+Elapsed time library (s): 30.79406523704529
 
+```
 From the results, we can see we've achieved a 350x speedup relative to our serial version of the matrix-multiply loop. 
 
 However, in our current version of the code, we are only parallelizing the outermost `for` loop in the triply-nested loop, but the middle loop can also be parallelized (it's possible to parallelize the innermost loop too but we will not do so here). This can be accomplished in multiple ways, but for simplicity, we'll just append `collapse(2)` to the `parallel for` directive:
@@ -289,10 +289,12 @@ However, in our current version of the code, we are only parallelizing the outer
 This `collapse` clause tells the compiler to collapse the outer 2 loops and treat them as a single loop, which also causes the directive to be applied to the single "combined" loop. Now add this in to the code, recompile, and run the program. It should give you an additional ~3x speedup, for a total of >1000x speedup:
 
 ```
-Elapsed time total (s)  : 62.66796130000148
-Elapsed time loop (s)   : 5.26038305900147
-Elapsed time library (s): 50.74522275100026
+Elapsed time total (s)  : 64.92484593391418
+Elapsed time loop (s)   : 32.94871306419373
+Elapsed time library (s): 30.48505496978760
 ```
+
+
 
 ## Summary
 
