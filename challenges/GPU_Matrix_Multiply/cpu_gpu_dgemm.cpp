@@ -6,7 +6,8 @@ Written by Tom Papatheodore, edited for Anvil by Anthony Ramirez
 
 #include <stdio.h>
 #include <cblas.h>
-#include <cublas.h>
+#include <cuda_runtime.h>
+#include <cublas_v2.h>
 
 // Macro for checking errors in CUDA API calls
 #define gpuErrorCheck(call)                                                              \
