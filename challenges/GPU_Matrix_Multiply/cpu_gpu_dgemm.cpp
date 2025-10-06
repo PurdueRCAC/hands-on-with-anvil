@@ -1,19 +1,19 @@
 /*------------------------------------------------------------------------------------------------
 This program will fill 2 NxN matrices with random numbers, compute a matrix multiply on the CPU 
 and then on the GPU, compare the values for correctness, and print _SUCCESS_ (if successful).
-Written by Tom Papatheodore
+Written by Tom Papatheodore, edited for Anvil by Anthony Ramirez
 ------------------------------------------------------------------------------------------------*/
 
 #include <stdio.h>
 #include <cblas.h>
-#include <hipblas.h>
+#include <cublas.h>
 
-// Macro for checking errors in HIP API calls
+// Macro for checking errors in CUDA API calls
 #define gpuErrorCheck(call)                                                              \
 do{                                                                                       \
-    hipError_t gpuErr = call;                                                             \
-    if(hipSuccess != gpuErr){                                                             \
-        printf("HIP Error - %s:%d: '%s'\n", __FILE__, __LINE__, hipGetErrorString(gpuErr));\
+    cudaError_t gpuErr = call;                                                             \
+    if(cudaSuccess != gpuErr){                                                             \
+        printf("CUDA Error - %s:%d: '%s'\n", __FILE__, __LINE__, cudaGetErrorString(gpuErr));\
         exit(0);                                                                            \
     }                                                                                     \
 }while(0)
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
 
     // Set device to GPU 0
-    gpuErrorCheck( hipSetDevice(0) );
+    gpuErrorCheck( cudaSetDevice(0) );
 
     /* Allocate memory for A, B, C on CPU ----------------------------------------------*/
     double *A = (double*)malloc(N*N*sizeof(double));
@@ -47,14 +47,14 @@ int main(int argc, char *argv[])
 
     /* Allocate memory for d_A, d_B, d_C on GPU ----------------------------------------*/
     double *d_A, *d_B, *d_C;
-    gpuErrorCheck( hipMalloc(&d_A, N*N*sizeof(double)) );
-    gpuErrorCheck( hipMalloc(&d_B, N*N*sizeof(double)) );
-    gpuErrorCheck( hipMalloc(&d_C, N*N*sizeof(double)) );
+    gpuErrorCheck( cudaMalloc(&d_A, N*N*sizeof(double)) );
+    gpuErrorCheck( cudaMalloc(&d_B, N*N*sizeof(double)) );
+    gpuErrorCheck( cudaMalloc(&d_C, N*N*sizeof(double)) );
 
     /* Copy host arrays (A,B,C) to device arrays (d_A,d_B,d_C) -------------------------*/
-    gpuErrorCheck( hipMemcpy(d_A, A, N*N*sizeof(double), hipMemcpyHostToDevice) );
-    gpuErrorCheck( hipMemcpy(d_B, B, N*N*sizeof(double), hipMemcpyHostToDevice) );
-    gpuErrorCheck( hipMemcpy(d_C, C, N*N*sizeof(double), hipMemcpyHostToDevice) );	
+    gpuErrorCheck( cudaMemcpy(d_A, A, N*N*sizeof(double), cudaMemcpyHostToDevice) );
+    gpuErrorCheck( cudaMemcpy(d_B, B, N*N*sizeof(double), cudaMemcpyHostToDevice) );
+    gpuErrorCheck( cudaMemcpy(d_C, C, N*N*sizeof(double), cudaMemcpyHostToDevice) );
 
     /* Perform Matrix Multiply on CPU --------------------------------------------------*/
 
@@ -65,16 +65,16 @@ int main(int argc, char *argv[])
 
     /* Perform Matrix Multiply on GPU --------------------------------------------------*/
 
-    hipblasHandle_t handle;
-    hipblasCreate(&handle);
+    cublasHandle_t handle;
+    cublasCreate(&handle);
 
     /************************************************************/
-	/* TODO: Add the hipblasDgemm routine here to */
+	/* TODO: Add the cublasDgemm routine here to */
 	/*       perform a matrix multiply on the GPU                */
 	/*                                                           */
 	/* NOTE: This will be similar to the CPU dgemm above but     */ 
 	/*       will use d_A, d_B, and d_C instead                  */
-	/*       use HIPBLAS_OP_N and HIPBLAS_OP_N for the           */
+	/*       use CUBLAS_OP_N and CUBLAS_OP_N for the           */
 	/*       2nd and 3rd option.                                 */
 	/*************************************************************/
 
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
     // Copy values of d_C (computed on GPU) into host array C_fromGPU	
     double *C_fromGPU = (double*)malloc(N*N*sizeof(double));	
-    gpuErrorCheck( hipMemcpy(C_fromGPU, d_C, N*N*sizeof(double), hipMemcpyDeviceToHost) );
+    gpuErrorCheck( cudaMemcpy(C_fromGPU, d_C, N*N*sizeof(double), cudaMemcpyDeviceToHost) );
 
     // Check if CPU and GPU give same results
     double tolerance = 1.0e-13;
@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
 
     /* Clean up and output --------------------------------------------------------------*/
 
-    hipblasDestroy(handle);
+    cublasDestroy(handle);
 
     // Free GPU memory
-    gpuErrorCheck( hipFree(d_A) );
-    gpuErrorCheck( hipFree(d_B) );
-    gpuErrorCheck( hipFree(d_C) );
+    gpuErrorCheck( cudaFree(d_A) );
+    gpuErrorCheck( cudaFree(d_B) );
+    gpuErrorCheck( cudaFree(d_C) );
 
     // Free CPU memory
     free(A);

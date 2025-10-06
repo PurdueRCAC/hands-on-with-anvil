@@ -72,7 +72,7 @@ Once you think you've correctly added the hipBLAS routine, try to compile the co
 First, you'll need to make sure your programming environment is set up correctly for this program. You'll need to use the cBLAS library for the CPU matrix multiply (`dgemm`) and the hipBLAS library for the GPU-version (`hipblasDgemm`), so you'll need to load the following modules:
 
 ```bash
-$ module load gcc              
+$ module load modtree/gpu
 $ module load openblas
 ```
 
