@@ -126,7 +126,7 @@ vx_nuc, vy_nuc, vz_nuc = 0., v_init_nuc, 0.
 
 ###### INFALLING PARTICLES SETUP #######
 
-N_part = 1000 # Total number of "particles" in galaxy (other than nucleus)
+N_part = 4000 # Total number of "particles" in galaxy (other than nucleus)
 
 # Create a random spherical distribution of particles (in both physical / velocity space)
 # Only one MPI rank needs to do this before we split up the data later

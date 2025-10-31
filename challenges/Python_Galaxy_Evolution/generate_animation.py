@@ -35,7 +35,7 @@ ax = fig.add_subplot(projection='3d')
 ax.plot(0,0,0,'o', markersize=10, alpha=0.5)
 
 # Plot infalling particles
-line, = ax.plot(particles_now[:, 0], particles_now[:, 1], particles_now[:, 2], 'ko', markersize=1)
+line, = ax.plot(particles_now[:, 0], particles_now[:, 1], particles_now[:, 2], 'ko', markersize=0.6)
 
 # Plot infalling nucleus
 line2, = ax.plot(nucleus_now[:,0], nucleus_now[:,1], nucleus_now[:,2], 'mo', markersize=3)
