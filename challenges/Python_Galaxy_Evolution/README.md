@@ -15,7 +15,6 @@ For example, you can extract specific variables through slicing, manipulate the 
 Both HDF5 and h5py can be compiled with MPI support, which allows you to optimize your HDF5 I/O in parallel.
 MPI support in Python is accomplished through the [mpi4py](https://mpi4py.readthedocs.io/en/stable/) package, which provides complete Python bindings for MPI.
 Building h5py against mpi4py allows you to write to an HDF5 file using multiple parallel processes, which can be helpful for users handling large datasets in Python.
-h5Py is available after loading the default Python module on Anvil, but it has not been built with parallel support.
 
 This hands-on challenge will teach you how to build a personal, parallel-enabled version of h5py and how to write an HDF5 file in parallel using mpi4py and h5py.
 Afterwards, using mpi4py and h5py, you will fix a galaxy evolution script that showcases the effects of tidal stripping for colliding galaxies.
@@ -36,94 +35,45 @@ Because of this, it is extremely important that all the modules and conda enviro
 First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
-> Note: It is advisable to restart your shell to ensure a clean environment.
-
 ```bash
 $ cd ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution
-$ module reset
-$ module load hdf5
+$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
+$ module purge
 ```
 
-Next, we will load the Anaconda module
+The `source deactivate_envs.sh` command is only necessary if you already have existing conda environments active.
+The script unloads all of your previously activated conda environments, and no harm will come from executing the script if that does not apply to you.
+
+Next, we will load the hdf5 module (necessary for h5py) and the conda module:
 
 ```bash
-$ module load anaconda/2024.02-py311
+$ module load modtree/cpu
+$ module load hdf5/1.10.7
+$ module load anaconda
 ```
 
-We are in a "base" conda environment, but we need to create a new environment using the `conda create` command.
-Because h5py depends on NumPy, and our challenge depends on other packages (scipy and matplotlib), we will install all of them at once:
-
-```
-$ conda create -n py3.10-galaxy python=3.10 libssh numpy scipy matplotlib -c conda-forge
-```
-
-After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
-
-```
-Preparing transaction: done
-Verifying transaction: done
-Executing transaction: done
-#
-# To activate this environment, use
-#
-#     $ conda activate py3.10-galaxy
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-```
-
-Let's activate the environment:
+We are in a "base" conda environment, but we need to activate a pre-built conda environment that has `mpi4py` and `h5py`.
 
 ```bash
-$ conda activate py3.10-galaxy
+$ source activate /anvil/projects/x-cis230270/data/envs/h5pympi-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment. 
-If you check with `conda env list`, you should see that the `*` marker is next to your new environment, which means that it is currently active:
+If you check with `which python3`, you should see that you're properly in the new environment:
 
 ```bash
-$ conda env list
-
-# conda environments:
-#
-                      *  /home/.conda/envs/2024.02-py311/py3.10-galaxy
-base                     /apps/.../anaconda/2024.02-py311
+$ which python3
+/anvil/projects/x-cis230270/data/envs/h5pympi-anvil/bin/python3
 ```
-
-## Installing mpi4py
-
-Now that we have a fresh conda environment, we will next install mpi4py from source into our new environment.
-To make sure that we are building from source, and not a pre-compiled binary, we will be using pip:
-
-```bash
-$ MPICC="cc -shared" pip install --no-cache-dir --no-binary=mpi4py mpi4py
-```
-
-The `MPICC` flag ensures that you are using the correct C wrapper for MPI on the system.
-Building from source typically takes longer than a simple `conda install`, so the download and installation may take a couple minutes.
-If everything goes well, you should see a "Successfully installed mpi4py" message.
-
-## Installing h5py
-
-Next, we are finally ready to install h5py from source:
-
-```bash
-$ HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_HOME} pip install --no-cache-dir --no-binary=h5py h5py
-```
-
-The `HDF5_MPI` flag is the key to telling pip to build h5py with parallel support, while the `CC` flag makes sure that we are using the correct C wrapper for MPI.
-This installation will take much longer than both the mpi4py and NumPy installations (5+ minutes if the system is slow).
-When the installation finishes, you will see a "Successfully installed h5py" message.
 
 ## Testing parallel h5py
 
 We will test our build by trying to write an HDF5 file in parallel using 42 MPI tasks.
 
-First, change directories to your Anvil scratch area and copy over the python and batch scripts:
+First, change directories to your scratch area and copy over the python and batch scripts:
 
 ```bash
-$ cd /anvil/scratch/<user>
+$ cd $SCRATCH
 $ mkdir h5py_test
 $ cd h5py_test
 $ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/hello_mpi.py .
@@ -136,7 +86,7 @@ Let's test that mpi4py is working properly first by executing the example Python
 To do so, we will be submitting a job to the batch queue with "submit_hello.sbatch":
 
 ```bash
-$ sbatch --export=NONE submit_hello.sbatch
+$ sbatch submit_hello.sbatch
 ```
 
 Once the batch job makes its way through the queue, it will run the "hello_mpi.py" script with 42 MPI tasks.
@@ -184,7 +134,7 @@ Each MPI task is going to assign their rank value to the "dset" array in Python,
 Time to execute "hdf5_parallel.py" by submitting "submit_h5py.sbatch" to the batch queue:
 
 ```bash
-$ sbatch --export=NONE submit_h5py.sbatch
+$ sbatch submit_h5py.sbatch
 ```
 
 Provided there are no errors, you should see "42 MPI ranks have finished writing!" in the `h5py.<JOB_ID>.out` output file, and there should be a new file called "output.h5" in your directory.
@@ -220,10 +170,10 @@ The results of the simulation will look something like this:
     <img width="50%" src="images/galaxy_collision.gif">
 </p>
 
-First, similar to before, change directories to your Anvil scratch area and copy over the python and batch scripts:
+First, similar to before, change directories to your scratch area and copy over the python and batch scripts:
 
 ```bash
-$ cd /anvil/scratch/<user>
+$ cd $SCRATCH
 $ mkdir galaxy_challenge
 $ cd galaxy_challenge
 $ cp ~/hands-on-with-anvil/challenges/Python_Galaxy_Evolution/galaxy.py .
@@ -238,9 +188,9 @@ You will be dealing with `galaxy.py`.
 The goal of `galaxy.py` is to simulate an infalling galaxy made up of "particles" (stars) and a "nucleus" (the compact central region) colliding with a bigger host galaxy.
 This would require a lot of code for it to be the most accurate ("many body" problems in physics are complicated); however, we made some physical assumptions to simplify the problem so that it is less complicated but still results in a roughly accurate galactic event.
 Even with simplifying things down, this script does not run quickly when not using MPI, as the amount of stars you want to simulate over a given time period quickly slows things down.
-We will be simulating 1000 stars and it takes about 10 minutes for the script to complete on Anvil when only using 1 MPI task, while completing in about 1.5 minutes when using 8 MPI tasks.
+We will be simulating 4000 stars and it takes about 13 minutes for the script to complete on Anvil when only using 1 MPI task, while completing in about 4 minutes when using 4 MPI tasks.
 
-In this challenge, you will be using 8 MPI tasks to help speed up the computations by splitting up the particles across your MPI tasks (each MPI task will only simulate a subset of the total number of particles).
+In this challenge, you will be using 4 MPI tasks to help speed up the computations by splitting up the particles across your MPI tasks (each MPI task will only simulate a subset of the total number of particles).
 The tasks will then write their subset of the data in parallel to an HDF5 file that will hold the entire final dataset.
 
 Luckily all the physics related stuff is done for you and all you have to worry about is changing a few h5py lines for the code to perform properly.
@@ -281,20 +231,16 @@ To do this challenge:
 3. Submit a job:
 
     ```bash
-    $ sbatch --export=NONE submit_galaxy.sbatch
+    $ sbatch submit_galaxy.sbatch
     ```
 
 4. If you fixed the script, you should see something similar to the output below in `galaxy-<JOB_ID>.out` after the job completes:
 
     ```python
-    MPI Rank 0 : Simulating my particles took 102.9287338256836 s
-    MPI Rank 5 : Simulating my particles took 105.36905121803284 s
-    MPI Rank 7 : Simulating my particles took 106.68532800674438 s
-    MPI Rank 2 : Simulating my particles took 108.80526208877563 s
-    MPI Rank 6 : Simulating my particles took 109.75137877464294 s
-    MPI Rank 4 : Simulating my particles took 111.80397272109985 s
-    MPI Rank 1 : Simulating my particles took 112.4355766773224 s
-    MPI Rank 3 : Simulating my particles took 117.3634796142578 s
+    MPI Rank 0 : Simulating my particles took 249.61843395233154 s
+    MPI Rank 2 : Simulating my particles took 250.8008005619049 s
+    MPI Rank 3 : Simulating my particles took 252.51063323020935 s
+    MPI Rank 1 : Simulating my particles took 255.1523950099945 s
     Success!
     ```
 
@@ -307,7 +253,27 @@ $ python3 generate_animation.py
 ```
 
 This will take around a minute to complete, but will result in your own GIF.
-You can then transfer this GIF to your computer with Globus, `scp`, or `sftp` to keep as a "souvenir" from the challenge.
+After you complete the challenge, you can transfer the GIF to your computer with Globus, `scp`, `sftp`, or by downloading from the "Files" tab in your OnDemand dashboard to keep as a "souvenir" from this challenge.
+
+## Environment Information
+
+> WARNING: This is NOT part of the challenge, but just context for how the mpi4py+h5py environment we used was installed
+
+Here's how the h5py+mpi4py environment was built:
+
+```bash
+module load modtree/cpu
+module load hdf5/1.10.7
+module load anaconda
+
+conda create -p /anvil/projects/x-cis230270/data/envs/h5pympi-anvil python=3.10 numpy scipy matplotlib -c conda-forge
+
+source activate /anvil/projects/x-cis230270/data/envs/h5pympi-anvil
+
+pip install --no-cache-dir mpi4py
+
+HDF5_MPI="ON" CC=cc HDF5_DIR=${HDF5_HOME} pip install --no-cache-dir --no-binary=h5py h5py
+```
 
 ## Additional Resources
 

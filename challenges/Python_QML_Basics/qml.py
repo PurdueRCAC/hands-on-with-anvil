@@ -56,7 +56,7 @@ def entangling_layer(nqubits):
         qml.CNOT(wires=[i, i + 1])
 
 
-dev = qml.device("lightning.kokkos", wires=n_qubits)
+dev = qml.device("lightning.qubit", wires=n_qubits)
 @qml.qnode(dev, interface="torch")
 def quantum_net(q_input_features, q_weights_flat):
     """
@@ -123,7 +123,7 @@ class DressedQuantumNet(nn.Module):
 
 
 def train_model(rank, world_size): #model, criterion, optimizer, scheduler, num_epochs):
-    torch.cuda.set_device(0) #assuming 1 gpu per MPI rank on Frontier
+    torch.cuda.set_device(rank) #assuming 1 gpu per MPI rank
     device = torch.cuda.current_device()
     print(f"Rank {rank} is using device {torch.cuda.current_device()}")
 
@@ -170,7 +170,7 @@ def train_model(rank, world_size): #model, criterion, optimizer, scheduler, num_
         ),
     }
 
-    data_dir = '/lustre/orion/world-shared/stf007/msandov1/crash_course_envs/hymenoptera_data'
+    data_dir = '/anvil/projects/x-cis230270/data/hymenoptera_data'
 
     image_datasets = {
         x if x == "train" else "validation": datasets.ImageFolder(
@@ -316,22 +316,20 @@ def train_model(rank, world_size): #model, criterion, optimizer, scheduler, num_
 # We are ready to perform the actual training process.
 
 if __name__ == "__main__":
-    n_gpus_total = torch.cuda.device_count()
-
-    print(f'Total GPUs on the system: {n_gpus_total}')
-
     from mpi4py import MPI
     comm = MPI.COMM_WORLD
     world_size = comm.Get_size()
     world_rank = rank = comm.Get_rank()
+
+    local_rank = int(rank) % 4 # four GPUs per node on Anvil
+
     backend = None
     os.environ['WORLD_SIZE'] = str(world_size)
     os.environ['RANK'] = str(world_rank)
-    os.environ['LOCAL_RANK'] = "0"
+    os.environ['LOCAL_RANK'] = str(local_rank)
 
     master_addr = os.environ["MASTER_ADDR"]
     os.environ['MASTER_ADDR'] = master_addr
     os.environ['MASTER_PORT'] = '29500'
-    os.environ['NCCL_SOCKET_IFNAME'] = 'hsn0'
     print(f'Total GPUs being used this run: {world_size}')
-    setup(rank, world_size)
+    setup(local_rank, world_size)
