@@ -10,32 +10,25 @@ This hands-on challenge will introduce a user to installing Conda on Anvil, the 
 
 &nbsp;
 
-## Installing Miniconda
-
-Currently, Anvil provides a few different ways to manage Python environments, most commonly by way of Anaconda modules. As new releases of Anaconda are available we add them to the modules but do not remove previous ones to not break existing environments users have created from them.
-
-```bash
-$ module avail anaconda
-```
-
-&nbsp;
-
-## Setting up the environment
+## Inspecting and setting up the environment
 
 First, we will unload all the current modules that you may have previously loaded on Anvil:
 
 ```bash
-$ module reset
+$ cd ~/hands-on-with-anvil/challenges/Python_Conda_Basics
+$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
+$ module purge
 ```
 
-Next, we need to load the `anaconda` module:
+Next, we need to load the conda module (allows us to create conda environments):
 
 ```bash
-$ module load anaconda/2024.02-py311
+$ module load modtree/cpu
+$ module load anaconda
 ```
 
-This puts you in the "`base`" conda environment.
-You will not be able to install new packages into the `base` environment because it is write protected from users. Instead you will want to create your own environments and install packages into them. 
+This puts you in the "`base`" conda environment (your base-level install that came with a few packages).
+Typical best practice is to not install new things into the `base` environment, but to create new environments instead. 
 So, next, we will create a new environment using the `conda create` command:
 
 ```bash
@@ -43,7 +36,6 @@ $ conda create -n py39-anvil python=3.9
 ```
 
 The "`-n`" flag specifies the desired name of your new virtual environment.
-This will install the environment into your home directory in a specific location. Instead, one can use the `-p <path>` option which will install to some other desired location (like your project directory).
 
 After executing the `conda create` command, you will be prompted to install "the following NEW packages" -- type "y" then hit Enter/Return.
 Downloads of the fresh packages will start and eventually you should see something similar to:
@@ -55,22 +47,20 @@ Executing transaction: done
 #
 # To activate this environment, use
 #
-#     $ conda activate py39-anvil
+#     $ conda activate /home/<user>/py39-anvil
 #
 # To deactivate an active environment, use
 #
 #     $ conda deactivate
 ```
 
-<!-- Please note, more recent releases of the Anaconda distribution for Python, specifically the `conda` package manager, now provide an activation mechanism that lets you invoke `conda activate x` instead of `source activate x`. While this improves the overall experience of most users and allows for a consistent interface across platforms, it is problematic on an HPC cluster. It is problematic because it asks you to first invoke `conda init $SHELL` before it will allow you to call `conda activate` on any of your environments. When you run `conda init` all that happens is it inserts a short snippet of code into your shell profile (e.g., `~/.bashrc`) to automatically activate the base environment every time you log in. This is convenient on your personal machine but problematic on an HPC resource where you will likely need to do things other than use that particular Anaconda or worse, it sources an expensive intialization script for every file transfer. -->
-
 Let's activate our new environment:
 
 ```bash
-$ conda activate py39-anvil
+$ source activate py39-anvil
 ```
 
-The name of your environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
+The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicate that you are currently using that specific conda environment.
 And if you check with `conda env list` again, you should see that the `*` marker has moved to your newly activated environment:
 
 ```
@@ -78,8 +68,8 @@ $ conda env list
 
 # conda environments:
 #
-py39-anvil          *  /home/<user>/.conda/envs/py39-anvil
-base                   /apps/.../anaconda/2024.02-py311
+py39-anvil            *  /home/<user>/py39-anvil
+base                     /apps/anvil/external/apps/conda/2025.02
 ```
 
 &nbsp;
@@ -89,30 +79,39 @@ base                   /apps/.../anaconda/2024.02-py311
 Next, let's install a package ([NumPy](https://numpy.org/)). 
 There are a few different approaches.
 
-One way to install packages into your conda environment is to build packages from source using [pip](https://pip.pypa.io/en/stable/).
+One way to install packages into your conda environment is to use [pip](https://pip.pypa.io/en/stable/).
+Although pip can install pre-compiled binaries like conda, it can also be used to build packages from source.
 This approach is useful if a specific package or package version is not available in the conda repository, or if the pre-compiled binaries don't work on the HPC resources (which is common).
-However, building from source means you need to take care of some of the dependencies yourself, especially for optimization.
-In Anvil's case, this means we need to load the `openblas` module.
 Pip is available to use after installing Python into your conda environment, which we have already done.
 
+>>  ---
+> NOTE: Because issues can arise when using conda and pip together (see link in [Additional Resources Section](#refs)), it is recommended to do this only if absolutely necessary. However, as long as you are careful about it, things will probably be fine.
+>>  ---
 
-> NOTE: Because issues can arise when using conda and pip together (see link in [Additional Resources Section](#refs)), it is recommended to do this only if absolutely necessary.
-
-
+Building from source means you need to take care of some of the dependencies yourself, especially for optimization.
+In Anvil's case, this means we need to load the `openblas` module.
 To build a package from source, use `pip install --no-binary=<package_name> <package_name>`:
 
 ```bash
 $ module load openblas
-$ CC=gcc pip install --no-binary=numpy numpy
+$ CC=gcc CXX=g++ pip install --no-binary=numpy numpy --no-cache-dir
 ```
 
 The `CC=gcc` flag will ensure that we are using the proper compiler and wrapper.
 Building from source results in a longer installation time for packages, so you may need to wait a few minutes for the install to finish.
+The `no-cache-dir` flag makes sure that no previously built packages that may exist in your cache are used.
+
+After it is finished building, you should see something similar to:
+
+```
+Successfully built numpy
+Installing collected packages: numpy
+Successfully installed numpy-2.0.2
+```
 
 Congratulations, you have built NumPy from source in your conda environment!  
 
-We did not link in any additional linear algebra packages, so this version of NumPy is not optimized.
-Let's install a more optimized version using a different method instead, but first we must uninstall the pip-installed NumPy:
+Now, let's install using a different method instead, but first we must uninstall the pip-installed NumPy:
 
 ```bash
 $ pip uninstall numpy
@@ -120,16 +119,17 @@ $ module unload openblas
 ```
 
 The traditional, and more basic, approach to installing/uninstalling packages into a conda environment is to use the commands `conda install` and `conda remove`.
-Installing packages with this method checks the [Anaconda Distribution Repository](https://docs.anaconda.com/anaconda/packages/pkg-docs/) for pre-built binary packages to install.
+In "regular" Andaconda, installing packages with this method checks the [Anaconda Distribution Repository](https://docs.anaconda.com/anaconda/packages/pkg-docs/) for pre-built binary packages to install.
+However, because we are using Miniforge, installing packages checks the [Conda-forge](https://anaconda.org/conda-forge) repository ("channel") instead.
 Let's do this to install NumPy:
 
 ```bash
-$ conda install numpy
+$ conda install numpy -c conda-forge
 ```
 
 Conda handles dependencies when installing pre-built binaries, so  it will automatically install all of the packages NumPy needs for optimization.   
 
-Congratulations, you have just installed an optimized version of NumPy, now let's test it!
+Congratulations, you have just installed NumPy, now let's test it!
 
 &nbsp;
 
@@ -138,9 +138,9 @@ Congratulations, you have just installed an optimized version of NumPy, now let'
 Let's run a small script to test that things installed properly.
 Since we are running a small test, we can do this without having to run on a compute node. 
 
+>>  ---
 > NOTE: Remember, at larger scales both your performance and your fellow users' performance will suffer if you do not run on the compute nodes.
-
-It is always highly recommended to run on the compute nodes (through the use of a batch job or interactive batch job).
+>>  ---
 
 Make sure you're in the correct directory and execute the example Python script:
 
@@ -148,14 +148,15 @@ Make sure you're in the correct directory and execute the example Python script:
 $ cd ~/hands-on-with-anvil/challenges/Python_Conda_Basics/
 $ python3 hello.py
 
-Hello from Python 3.9.18!
-You are using NumPy 1.26.0
+Hello from Python 3.9.22!
+You are using NumPy 2.0.2
 ```
 
 Congratulations, you have just created your own Python environment and ran on one of the fastest computers in the world!
 
-
+>>  ---
 > Note: If you're doing this challenge for the certificate, you can submit your Python environment for completion. See "Exporting (sharing) an environment" tip below of how to export your environment to a file.
+>>  ---
 
 &nbsp;
 
@@ -169,8 +170,8 @@ Congratulations, you have just created your own Python environment and ran on on
     An example for cloning the base environment into your `$HOME` directory on Anvil is provided below:
 
     ```bash
-    $ conda create -n baseclone-anvil --clone base
-    $ conda activate baseclone-anvil
+    $ conda create -p /home/${USER}/.conda/envs/baseclone-anvil --clone base
+    $ source activate /home/${USER}/.conda/envs/baseclone-anvil
     ```
 
 * Deleting an environment:
@@ -178,7 +179,7 @@ Congratulations, you have just created your own Python environment and ran on on
     If for some reason you need to delete an environment, you can execute the following:
 
     ```bash
-    $ conda env remove -n <name>
+    $ conda env remove -p /path/to/your/env
     ```
 
 * Exporting (sharing) an environment:
@@ -190,7 +191,7 @@ Congratulations, you have just created your own Python environment and ran on on
     To export your environment list:
     
     ```bash
-    $ conda activate my_env
+    $ source activate my_env
     $ conda env export > environment.yml
     ```
     
@@ -218,11 +219,9 @@ Congratulations, you have just created your own Python environment and ran on on
     $ conda config --append envs_dirs /anvil/project/<project>/<user>/conda_envs/anvil
     ```
     
-    > Note: On Anvil you can see your allocation with the `myproject` command as well as other locations with the `myquota` command.
-
     This will create a `.condarc` file in your `$HOME` directory if you do not have one already, which will now contain this new envs_dirs location.
-    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /anvil/project/<project>/<user>/conda_envs/env_name` option and specifying the full path to the environment.
-    For example, you can do `conda activate py3711-anvil` instead of `conda activate /anvil/project/<project>/<user>/conda_envs/py3711-anvil`.
+    This will now enable you to use the `--name env_name` flag when using conda commands for environments stored in that specific directory, instead of having to use the `-p /anvil/project/<project>/<user>/conda_envs/anvil/env_name` flag and specifying the full path to the environment.
+    For example, you can do `source activate py39-anvil` instead of `source activate /anvil/project/<project>/<user>/conda_envs/anvil/py39-anvil`.
 
 &nbsp;
 
@@ -314,3 +313,4 @@ Congratulations, you have just created your own Python environment and ran on on
 * [Anaconda Package List](https://docs.anaconda.com/anaconda/packages/pkg-docs/)
 * [Pip User Guide](https://pip.pypa.io/en/stable/user_guide/)
 * [Using Pip In A Conda Environment](https://www.anaconda.com/blog/using-pip-in-a-conda-environment)
+* [Python on OLCF Systems](https://docs.olcf.ornl.gov/software/python/index.html)
