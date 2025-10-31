@@ -1,7 +1,7 @@
 # Python: CuPy Basics
 
 GPU computing has become a big part of the data science landscape, as array operations with NVIDIA GPUs can provide considerable speedups over CPU computing.
-Although GPU computing on Anvil is often utilized in codes that are written in Fortran and C, GPU-related Python packages are quickly becoming popular in the data science community.
+Although GPU computing is often utilized in codes that are written in Fortran and C, GPU-related Python packages are quickly becoming popular in the data science community.
 One of these packages is [CuPy](https://cupy.dev/), a NumPy/SciPy-compatible array library accelerated with NVIDIA CUDA.
 
 CuPy is a library that implements NumPy arrays on NVIDIA GPUs by utilizing CUDA Toolkit libraries like cuBLAS, cuRAND, cuSOLVER, cuSPARSE, cuFFT, cuDNN and NCCL.
@@ -14,9 +14,7 @@ Most operations provide an immediate speed-up out of the box, and some operation
     <img width="50%" src="images/cupy_chart.png">
 </p>
 
-Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy’s capabilities on the system, providing significant speedups over NumPy-written code. CuPy with AMD GPUs is still being explored, and the same performance is not guaranteed (especially with larger data sizes).  
-
-Instructions for Anvil are available in this guide, but users must note that the CuPy developers have labeled this method as experimental and has limitations.
+Compute nodes equipped with NVIDIA GPUs will be able to take full advantage of CuPy’s capabilities on the system, providing significant speedups over NumPy-written code.
 
 &nbsp;
 
@@ -30,122 +28,50 @@ In this challenge, you will:
 
 ## Setting up our environment
 
->>  ---
-> Before setting up your environment, you must exit and log back in so that you have a fresh login shell. This is to ensure that no previously activated environments exist in your $PATH environment variable. Additionally, you should execute module reset.
->>  ---
-
 First, we will unload all the current modules that you may have previously loaded on Anvil and then immediately load the default modules.
 Assuming you cloned the repository in your home directory:
 
 ```bash
 $ cd ~/hands-on-with-anvil/challenges/Python_Cupy_Basics
 $ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
-$ module reset
+$ module purge
 ```
 
-The `source deactivate_envs.sh` command is only necessary if you already have the Python module loaded.
+The `source deactivate_envs.sh` command is only necessary if you already have existing conda environments active.
 The script unloads all of your previously activated conda environments, and no harm will come from executing the script if that does not apply to you.
 
-Next, we will load the gnu compiler module (most Python packages assume GCC), relevant GPU module (necessary for CuPy):
+Next, we will load the relevant GPU module (necessary for CuPy) and the conda module:
 
 ```bash
-$ module load PrgEnv-gnu
-$ module load rocm/5.3.0
-$ module load craype-accel-amd-gfx90a
-$ source ~/miniconda-anvil-handson/bin/activate base
+$ module load modtree/gpu
+$ module load anaconda
 ```
 
-We loaded the "base" conda environment, but we need to create a new environment using the `conda create` command:
-
-```
-$ conda create -p ~/.conda/envs/cupy-anvil python=3.10
-```
-
->>  ---
-> NOTE: As noted in [Conda Basics](../Python_Conda_Basics), it is highly recommended to create new environments in the "Project Home" directory.
-> However, due to the limited disk quota and potential number of training participants on Anvil, we will be creating our environment in the "User Home" directory.
->>  ---
-
-After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
-
-```
-Preparing transaction: done
-Verifying transaction: done
-Executing transaction: done
-#
-# To activate this environment, use
-#
-#     $ conda activate ~/.conda/envs/cupy-anvil
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-```
-
-Due to the specific nature of conda on Anvil, we will be using `source activate` instead of `conda activate` to activate our new environment:
+We loaded the "base" conda environment, but we need to activate a pre-built conda environment that has CuPy.
 
 ```bash
-$ source activate ~/.conda/envs/cupy-anvil
+$ source activate /anvil/projects/x-cis230270/data/envs/cupy-anvil
 ```
 
 The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
-If you check with `conda env list`, you should see that the `*` marker is next to your new environment, which means that it is currently active:
+If you check with `which python3`, you should see that you're properly in the new environment:
 
 ```bash
-$ conda env list
-
-# conda environments:
-#
-                      * /home/<YOUR_USER_ID>/.conda/envs/cupy-anvil
-base                    /home/<YOUR_USER_ID>/miniconda-anvil-handson
+$ which python3
+/anvil/projects/x-cis230270/data/envs/cupy-anvil/bin/python3
 ```
 
-CuPy depends on NumPy, so let's install an optimized version of NumPy into our fresh conda environment:
-
-```bash
-$ conda install -c defaults --override-channels numpy scipy
-```
-
-After following the prompts, NumPy and its linear algebra dependencies should successfully install.
-
-We also installed SciPy, which is an optional dependency, but it will allow us to use the additional SciPy-based routines in CuPy.
-
-Finally, we will install CuPy from source into our environment.
-To make sure that we are building from source, and not a pre-compiled binary, we will be using pip:
-
-```bash
-$ export CUPY_INSTALL_USE_HIP=1
-$ export ROCM_HOME=/opt/rocm-5.3.0
-$ export HCC_AMDGPU_TARGET=gfx90a
-$ CC=gcc pip install --no-cache-dir --no-binary=cupy cupy
-```
-
-The `CUPY_INSTALL_USE_HIP` flag makes sure that we are using HIP instead of CUDA, and the `CC` flag ensures that we are passing the correct compiler wrapper.  
-
-This installation takes, on average, 20 minutes to complete (due to building everything from scratch), so don't panic if it looks like the install timed-out.
-Eventually you should see output similar to:
-
-```
-Successfully installed cupy-12.2.0 fastrlock-0.8.1
-```
-
-Congratulations, you just installed CuPy on Anvil!
 
 &nbsp;
 
 ## Getting Started With CuPy
-
->> ---
-> NOTE: Assuming you are continuing from the previous section, you do not need to load any modules.
-> However, if you logged out after finishing the previous section, you must load the modules followed by activating your CuPy conda environment before moving on.
->> ---
 
 Before we start testing the CuPy scripts provided in this repository, let's go over some of the basics.
 The developers provide a great introduction to using CuPy in their user guide under the [CuPy Basics](https://docs.cupy.dev/en/stable/user_guide/basic.html) section.
 We will be following this walkthrough on Anvil.
 This is done to illustrate the basics, but participants should **NOT** explicitly follow along (as resources are limited on Anvil and interactive jobs will clog up the queue).
 
-The syntax below assumes being in a Python shell with access to 4 GPUs; however, Anvil interactive nodes have 8 GPUs allocated to CuPy by default. 
+The syntax below assumes being in a Python shell with access to 4 GPUs. 
 
 As is the standard with NumPy being imported as "np", CuPy is often imported in a similar fashion:
 
@@ -272,8 +198,8 @@ Now let's apply what you've learned.
 
 Before asking for a compute node, let's change into our scratch directory and copy over the relevant files.
 
-```
-$ cd /lustre/orion/PROJECT_ID/scratch/${USER}/
+```bash
+$ cd $SCRATCH
 $ mkdir cupy_test
 $ cd cupy_test
 $ cp ~/hands-on-with-anvil/challenges/Python_Cupy_Basics/data_transfer.py .
@@ -345,7 +271,7 @@ To do this challenge:
 3. Submit a job:
 
     ```bash
-    $ sbatch --export=NONE submit_data.sbatch
+    $ sbatch submit_data.sbatch
     ```
 
 4. If you fixed the script, you should see the below output in `cupy_xfer-<JOB_ID>.out` after the job completes:
@@ -372,26 +298,13 @@ If you got the script to successfully run, then congratulations!
 Here's how the CuPy environment was built:
 
 ```bash
-$ module load PrgEnv-gnu/8.5.0 
-$ module load rocm/6.1.3
-$ module load craype-accel-amd-gfx90a
-$ module load miniforge3/23.11.0-0 
+module load modtree/gpu
+module load anaconda
 
-$ conda create -p /lustre/orion/world-shared/stf007/msandov1/crash_course_envs/cupy-frontier python=3.10 numpy=1.26 scipy -c conda-forge
+conda create -p /anvil/projects/x-cis230270/data/envs/cupy-anvil python=3.10 numpy scipy -c conda-forge
+source activate /anvil/projects/x-cis230270/data/envs/cupy-anvil
 
-$ source activate /lustre/orion/world-shared/stf007/msandov1/crash_course_envs/cupy-frontier
-
-$ git clone --recursive https://github.com/cupy/cupy
-
-$ export CUPY_INSTALL_USE_HIP=1
-$ export ROCM_HOME=/opt/rocm-6.1.3
-$ export HCC_AMDGPU_TARGET=gfx90a
-$ export CC=cc
-$ export CXX=CC
-
-$ python3 setup.py bdist_wheel
-
-$ pip install dist/*.whl
+pip install cupy-cuda11x
 ```
 
 ## Additional Resources
