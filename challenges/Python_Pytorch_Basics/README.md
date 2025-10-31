@@ -13,12 +13,11 @@ In high-performance computing (HPC), ML/DL is getting more and more popular beca
 To process and train an accurate ML/DL model in a reasonable amount of time, more and more compute nodes are required as the amount of big data increases.
 
 [PyTorch](https://pytorch.org/) is a library for Python programs that pairs well with HPC resources and facilitates building DL projects.
-PyTorch emphasizes the flexibility and human-readableness of Python and allows deep learning models to be expressed in a similar manner.
+PyTorch emphasizes the flexibility and human-readability of Python and allows deep learning models to be expressed in a similar manner.
 Think about the simplicity, structure, and usefulness of NumPy and its arrays, but more geared toward ML/DL algorithms and its tensors -- that's what PyTorch is.
 Compared to other frameworks and libraries, it is one of the more "beginner friendly" ML/DL packages due to its dynamic and familiar "Pythonic" nature.
 PyTorch is also useful when GPUs are involved because of its strong GPU acceleration ability.
-
-> Note: Anvil has a special GPU partition with many NVIDIA A100 GPUs that work very well with libraries like pytorch; however, because this workshop's allocation `cis230270` is not granted on this resource, we will instead make use of the `cpuonly` variant of pytorch. To be clear, the 128-core nodes on Anvil are still very capable in this regard!
+On Anvil, PyTorch is able to take advantage of the GPUs available on the system.
 
 In this challenge, you will:
 
@@ -45,7 +44,6 @@ Table of Contents:
 	* [Training Loop](#train-loop)
 	* [Testing Loop](#test-loop)
 * [Challenge: Tuning a CNN](#chall)
-	* [Leaderboard](#leaderboard)
 * [Environment Information](#install)
 * [Additional Resources](#resources)
 
@@ -57,67 +55,38 @@ First, we will unload all the current modules that you may have previously loade
 Assuming you cloned the repository in your home directory:
 
 ```bash
-$ module reset
-$ module load anaconda/2024.02-py311
+$ cd ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics
+$ source ~/hands-on-with-anvil/misc_scripts/deactivate_envs.sh
+$ module purge
 ```
 
-We loaded the "base" conda environment, but we need to create a new environment using the conda create command:
+The `source deactivate_envs.sh` command is only necessary if you already have existing conda environments active.
+The script unloads all of your previously activated conda environments, and no harm will come from executing the script if that does not apply to you.
+
+Next, we will load the GPU module (necessary for using PyTorch on the GPU) and the conda module:
 
 ```bash
-$ conda create -n py3.12-torch python=3.12 pytorch torchvision torchaudio cpuonly -c pytorch
+$ module load modtree/gpu
+$ module load anaconda
 ```
 
-After following the prompts for creating your new environment, the installation should be successful, and you will see something similar to:
-
-```
-Preparing transaction: done
-Verifying transaction: done
-Executing transaction: done
-#
-# To activate this environment, use
-#
-#     $ conda activate py3.12-torch
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-```
-
-Activate the new environment:
+We loaded the "base" conda environment, but we need to activate a pre-built conda environment that has PyTorch.
 
 ```bash
-$ conda activate py3.12-torch
+$ source activate /anvil/projects/x-cis230270/data/envs/torch-anvil
 ```
 
-The name of the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
-If you check with `conda env list`, you should see that the `*` marker is next to your new environment, which means that it is currently active:
-
-
-```bash
-$ conda env list
-
-# conda environments:
-#
-                      * /home/<user>/.conda/envs/2024.02-py311/py3.12-torch
-base                    /apps/.../anaconda/2024.02-py311
-```
-
-If you run `which python3`, you should see that you're properly in the new environment:
+The path to the environment should now be displayed in "( )" at the beginning of your terminal lines, which indicates that you are currently using that specific conda environment.
+If you check with `which python3`, you should see that you're properly in the new environment:
 
 ```bash
-(py3.12-torch) $ which python3
-/home/<user>/.conda/envs/2024.02-py311/py3.12-torch/bin/python3
-```
-
-Finally, we will also want to install `matplotlib` for the plotting functions in the CNN.
-
-```bash
-$ conda install matplotlib
+$ which python3
+/anvil/projects/x-cis230270/data/envs/torch-anvil/bin/python3
 ```
 
 &nbsp;
 
-## 2. <a name="pytorch"></a>Getting Started With PyTorch
+## 2. <a name="ptorch"></a>Getting Started With PyTorch
 
 Before we jump into the PyTorch challenge script provided in this repository, let's go over some of the basics.
 The developers provide a great introduction to using PyTorch on their website under the [PyTorch Tutorials](https://pytorch.org/tutorials/beginner/basics/intro.html) section.
@@ -126,9 +95,10 @@ We will be following a slightly modified version of that walkthrough on Anvil.
 Let's get started by importing PyTorch in a Python prompt:
 
 ```python
-$ python
+$ python3
 
-Python 3.12.7 | packaged by conda-forge | (main, Oct  4 2024, 16:05:46) [GCC 13.3.0] on linux
+Python 3.9.13 (main, Aug 10 2022, 17:20:06) 
+[GCC 9.3.0 20200312 (Cray Inc.)] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import torch
 >>> import numpy as np
@@ -136,7 +106,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 ### 2.1 <a name="tensors"></a>Tensors
 
-One of the most important datatypes in all of deep learning are "tensors".
+One of the most important data types in all of deep learning are "tensors".
 Tensors are a specialized data structure that are very similar to arrays and matrices.
 In PyTorch, tensors are used to encode the inputs and outputs of a model.
 Tensors are similar to NumPy’s `ndarrays`, can run on GPUs, and are typically more optimized than normal arrays.
@@ -271,8 +241,8 @@ We define the following hyperparameters for training:
 * <a name="epochs"></a>**Epochs**: the number of times to iterate over *all* the samples.
 * <a name="batches"></a>**Batch size**: the number of data samples propagated through the network at each step.
 * **Number of steps**: the number of iterations *within* each epoch (total number of samples divided by the batch size).
-* **Learning Rate**: how much to update models parameters at each batch/epoch.
-  Smaller values yield slow learning speed, while large values may result in unpredictable behavior during training.
+* **Learning Rate**: how much to update the model's parameters at each batch/epoch.
+  Smaller values yield slow learning speed, while larger values may result in unpredictable behavior during training.
 
 At the end of the challenge, you will tune the **epochs** and **batch size** to try and get "the best" CNN up and running for a fixed learning rate.
 
@@ -341,7 +311,7 @@ When using a pre-packaged dataset included in torchvision, you can use `torchvis
 In the `cnn.py` challenge script (on lines 136 and 139) you can see this data loading workflow explicitly:
 
 ```python
-train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True,
+train_dataset = torchvision.datasets.CIFAR10(root='/anvil/projects/x-cis230270/data/torch_basics_data', train=True,
                                         download=False, transform=transform)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
@@ -365,7 +335,7 @@ Shuffling data helps it break the structured learning and hence reducing bias fo
 The above just covers the "training dataset", next we need to initialize the "test dataset" (lines 142 and 145):
 
 ```python
-test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False,
+test_dataset = torchvision.datasets.CIFAR10(root='/anvil/projects/x-cis230270/data/torch_basics_data', train=False,
                                        download=False, transform=transform)
 
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size,
@@ -510,8 +480,8 @@ One may ask: "why do you use multiple fully connected layers if the output of on
 Other than the reason being "more layers are usually better for everything", there is a more concrete reason.
 If one goes through the math, it will become visible that each neuron (initially) depends only on a **subset** of the image (only a specific section of pixels).
 However, neurons in a fully connected layer have full connections to all activations in the previous layer.
-So, if you introduce multiple fully connected layers, you provide your model with ability to further mix and share a neuron's data, since every single neuron has a connection to every single one in the next layer.
-This creates a flow of information between each of the images pixel locations, rather than just a subset, thus the decision is based truly on the whole image.
+So, if you introduce multiple fully connected layers, you provide your model with the ability to further mix and share a neuron's data, since every single neuron has a connection to every single one in the next layer.
+This creates a flow of information between each of the images' pixel locations, rather than just a subset, thus the decision is based truly on the whole image.
 
 Based on the activation values of the final convolution layer, the series of fully connected layers output a set of confidence scores (values between 0 and 1) that specify how likely the image is to belong to a "class".
 In our case, the output of the final layer is the possibility that the input image contains any of the animals previously mentioned in the [Datasets Section](#dsets).
@@ -570,7 +540,7 @@ criterion = nn.CrossEntropyLoss()
 
 As you will see in the next section, the `criterion` variable (and, therefore, the softmax function) is called directly after obtaining the final results of the `ConvNet.forward()` function.
 
-The final line in defining our CNN is `return x` which returns the final results of our network through a single forward pass.
+The final line in defining our CNN is `return x`, which returns the final results of our network through a single forward pass.
 It's as simple as that!
 Now we're ready to train the CNN in the "training loop" of our code.
 
@@ -638,7 +608,7 @@ Second, we initialize the loss function and optimizer and set them to the `crite
 Next, we enter the training loop, which will train for a number of epochs (**epochs** are user-specified), where within each epoch it will take `n_total_steps` based on how many batches of images are processed at once (the **batch size** is user-specified).
 In the training loop, the `images` and `labels` of the `training_loader` data are first passed to the computing device (recall these variables from the [Loading Data Section](#load)).
 Then, `model(images)` is called to actually process the image data to the CNN -- the results of the images going through the CNN are then set to the `outputs` variable.
-The loss function is then called, which calculates the final probabilities and error an image is a specific classification -- the loss function results are set to the `loss` variable.
+The loss function is then called, which calculates the final probabilities and error of an image in a specific classification -- the loss function results are set to the `loss` variable.
 
 To try and optimize the results for the next step, the `loss` results are then propagated backwards to the "beginning" so that the network can adjust its parameters.
 This is done by first using the previously defined `optimizer` to zero-out its gradients (to prevent double counting), explicitly back-propagate the error with `loss.backward()` and finally tell the network to adjust its parameters based on that back-propagation with `optimizer.step()`.
@@ -686,7 +656,7 @@ We stop tracking computations by surrounding the testing loop with `torch.no_gra
 
 Within the loop itself, all that is happening is passing the images and labels of the `test_loader` test data (recall this variable from the [Loading Data Section](#load)), getting the results from the CNN via the `outputs` variable, and then checking the predictions against the actual labels of the data.
 The results contained in `outputs` are passed through the `torch.max` function, which extracts the maximum value (max probability of a certain class) from the `outputs` tensor -- since the 10 different classes are represented by 10 different indices (0-9), we save the index of the class that represents the max probability into the `predicted` variable.
-After being compared to the actual labels the the images came with, the **total** number of samples and **total** number of correct predictions are then saved into `n_samples` and `n_correct`.
+After being compared to the actual labels the images came with, the **total** number of samples and **total** number of correct predictions are then saved into `n_samples` and `n_correct`.
 In addition to the *overall* correct predictions across the whole network, analysis is also performed on a *class* level:
 
 * The correct predictions for each class are stored in `n_class_correct` (e.g., how many times the network correctly guessed "Frog").
@@ -694,10 +664,10 @@ In addition to the *overall* correct predictions across the whole network, analy
 * How many times the model tried, and potentially failed, to guess a class is stored in `n_class_predics` (e.g., total amount of times, whether correct or not, the network guessed "Frog").
 
 The rest of the code below the testing loop in `cnn.py` just prints statistics and generates the plots, so it is not necessary to explain.
-In a real world application, the results of this test would then be saved and fed to go in another training loop; however, this is where our code ends.
+In a real-world application, the results of this test would then be saved and fed to go in another training loop; however, this is where our code ends.
 Therefore, this marks the end of the CNN code!
 
-Congratulations for making it all the way through the context and explanation of a CNN!
+Congratulations on making it all the way through the context and explanation of a CNN!
 Now for the fun part, the actual challenge!
 
 ## 5. <a name="chall"></a>Challenge: Tuning a CNN
@@ -707,21 +677,20 @@ You'll be submitting a job to run on a compute node to train your network.
 However, before asking for a compute node, change into your scratch directory and copy over the relevant files.
 
 ```bash
-$ cd /anvil/scratch/<x-userid>
+$ cd $SCRATCH
 $ mkdir pytorch_test
 $ cd pytorch_test
-$ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/download_data.py ./download_data.py
 $ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/cnn.py ./cnn.py
 $ cp ~/hands-on-with-anvil/challenges/Python_Pytorch_Basics/submit_cnn.sbatch ./submit_cnn.sbatch
 ```
 
-The goal of this challenge is to achieve an overall network accuracy of 60% or greater with a learning rate of 0.001 within an hour of compute time.
+The goal of this challenge is to achieve an overall network accuracy of 60% or greater with a learning rate of 0.001 within 30 minutes of compute time.
 After you run your job, and as your job is running, you should have a `pytorch_cnn-<JOB_ID>.out` file in the directory you submitted the job from.
 This will print out statistics as the job runs, and print out final network accuracies once the job completes.
 If the output isn't generated or the job crashes, check `pytorch_cnn-<JOB_ID>.err` to see what went wrong.
 Don't hesitate to ask questions in the Slack channel!
 
-> Note: Because of the 1 hour walltime limit, a "realistic" goal to aim for would be mid 60s in accuracy, while anything approaching 70% would be considered amazing.
+> Note: Because of the 30 minute walltime limit, a "realistic" goal to aim for would be mid 60s in accuracy, while anything approaching 70% would be considered amazing.
 
 The `cnn.py` script will also generate two picture files: `last_batch.png` and `overall_results.png` which are visual representations of how the network performed.
 More specifically:
@@ -729,33 +698,17 @@ More specifically:
 * `last_batch.png`: Shows you the last batch of animal images to get tested by the network. The pictures are titled by their actual classification and also include what the network guessed the animal was.
 * `overall_results.png`: Bar charts of how accurate your network was at predicting each class of animal. This includes your overall network accuracy, identification success (e.g., number of frogs correct divided by number of frog images), and prediction success (e.g., number of frogs correct divided by number of times GUESSED "frog").
 
-If you have something like [XQuartz](https://www.xquartz.org/index.html) (Mac) or [Xming](http://www.straightrunning.com/XmingNotes/) (Windows) installed on your local computer, and have enabled window forwarding, you can open the images on Frontier by doing:
-
-```bash
-$ module load imagemagick
-$ display last_batch.png
-$ display overall_results.png
-```
+You can open the images on Anvil by navigating to the "Files" tab in your OnDemand dashboard.
 
 Opening the images is **not required**, as all the same statistics will be printed to your `.out` file.
 
-> Note: You can only open the images if you connected to Frontier with window forwarding enabled and have X software installed (see above). Enabling window forwarding is usually done by including the `X` or `Y` SSH flags when connecting to the system. For example: `ssh -XY userid@frontier.olcf.ornl.gov`. PuTTY users have an "X11 Forwarding" checkbox located in their SSH settings.
-
-After you complete the challenge, you can transfer these plots to your computer with Globus, `scp`, or `sftp` to keep as "souvenirs" from this challenge.
+After you complete the challenge, you can transfer these plots to your computer with Globus, `scp`, `sftp`, or by downloading from the "Files" tab in your OnDemand dashboard to keep as "souvenirs" from this challenge.
 
 To do this challenge:
 
-0. Make sure you copied over the scripts and are in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory (see beginning of this section).
+0. Make sure you copied over the scripts and are in your `${SCRATCH}/pytorch_test` directory (see beginning of this section).
 
-1. Run the `download_data.py` script to download the CIFAR-10 dataset. This is necessary because the compute nodes won't be able to download it during your batch job when running `cnn.py`. If successful, you'll see a directory named `data` in your current directory.
-
-    ```bash
-    $ python3 download_data.py
-    ```
-    > Note: You only need to run this script once.
-    > Warning: This script MUST be run in the same directory you plan to run `cnn.py` (in your `/lustre/orion/[projid]/scratch/[userid]/pytorch_test` directory)
-
-2. Use your favorite editor to change `num_epochs` and `batch_size` to tune your network (lines 119 and 120, marked by "CHANGE-ME"). For example:
+1. Use your favorite editor to change `num_epochs` and `batch_size` to tune your network (lines 119 and 120, marked by "CHANGE-ME"). For example:
 
     ```bash
     $ vi cnn.py
@@ -769,40 +722,39 @@ To do this challenge:
     ```
     > Warning: You must pick a `batch_size` so that 50,000 divided by `batch_size` results in a whole number. You can get errors if this is not the case.
 
-3. Submit a job:
+2. Submit a job:
 
     ```bash
-    $ sbatch --export=NONE submit_cnn.sbatch
+    $ sbatch submit_cnn.sbatch
     ```
 
-4. Look at the statistics printed in your `pytorch_cnn-<JOB_ID>.out` file after the job completes to see if you were successful or not (i.e., see "Success!" or "Try again!").
-5. If you aren't successful, write down your results based on your parameters and try again! Looking at your `pytorch_cnn-<JOB_ID>.out` file or PNG files should help give you ideas of how to refine your parameters.
+3. Look at the statistics printed in your `pytorch_cnn-<JOB_ID>.out` file after the job completes to see if you were successful or not (i.e., see "Success!" or "Try again!").
+4. If you aren't successful, write down your results based on your parameters and try again! Looking at your `pytorch_cnn-<JOB_ID>.out` file or PNG files should help give you ideas of how to refine your parameters.
 
 > Hint: It's always a balance of the number of epochs and the size of your batches -- bigger numbers aren't always optimal. Try changing only one of the parameters and look at how it affects your network's performance.
 
 Thanks for following along and attempting the challenge!
 If you liked this challenge, I suggest exploring [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html) and [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html) for speeding up training.
 Our OLCF analytics team also made some nice overview examples of [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/).
-If you liked PyTorch I also suggest taking a loot at [PyTorch Lightning](https://www.pytorchlightning.ai/). 
-
-### 5.1 <a name="leaderboard"></a>Leaderboard
-
-Below is a top 10 leaderboard of peoples' best CNNs that achieved >60% accuracy within an hour of walltime on Ascent!
-
-Top Accuracy:
-
-| Rank  | Name             | Program                       | Accuracy | Speed   |
-| :---  | :---             | :---------:                   | :------: | :---:   |
-| 1.    | Michael S.       | OLCF                          | 99.99%   | 9999s   |
+If you liked PyTorch I also suggest taking a look at [PyTorch Lightning](https://www.pytorchlightning.ai/). 
 
 
-Top Speed:
+## 6. <a name="install"></a>Environment Information
 
-| Rank  | Name             | Program                       | Accuracy | Speed   |
-| :---  | :---             | :---------:                   | :------: | :---:   |
-| 1.    | Michael S.       | OLCF                          | 99.99%   | 9999s   |
+> WARNING: This is NOT part of the challenge, but just context for how the PyTorch environment we used was installed
 
-## 6. <a name="resources"></a>Additional Resources
+Here's how the PyTorch environment was built:
+
+```bash
+module load modtree/gpu
+module load anaconda
+
+conda create -p /anvil/projects/x-cis230270/data/envs/torch-anvil python=3.10 imagemagick matplotlib -c conda-forge
+source activate /anvil/projects/x-cis230270/data/envs/torch-anvil
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
+```
+
+## 7. <a name="resources"></a>Additional Resources
 
 Info relevant to this challenge:
 
@@ -815,6 +767,7 @@ Info relevant to this challenge:
 
 Extra information:
 
+* [PyTorch on Frontier](https://docs.olcf.ornl.gov/software/python/pytorch_frontier.html)
 * [Distributed Training with PyTorch](https://pytorch.org/tutorials/beginner/dist_overview.html)
 * [PyTorch's Distributed Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
 * [Distributed Deep Learning on Summit](https://code.ornl.gov/olcf-analytics/summit/distributed-deep-learning-examples/)

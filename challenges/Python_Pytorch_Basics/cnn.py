@@ -114,8 +114,10 @@ class ConvNet(nn.Module):
 #################### CNN WORKFLOW ##########################
 
 # Device configuration
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('The device you are using is: ',device)
+# Redundant for Anvil but necessary for some reason
+print(f"Using device {torch.cuda.current_device()}")
+torch.cuda.set_device(0)
+device = torch.cuda.current_device()
 
 # Hyper-parameters 
 num_epochs = 4 # CHANGE-ME
@@ -135,13 +137,13 @@ transform = transforms.Compose(
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 # CIFAR10: 60000 32x32 color images in 10 classes, with 6000 images per class
-train_dataset = torchvision.datasets.CIFAR10(root='./data', train=True,
+train_dataset = torchvision.datasets.CIFAR10(root='/anvil/projects/x-cis230270/data/torch_basics_data', train=True,
                                         download=False, transform=transform)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
                                           shuffle=True, num_workers=0)
 
-test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False,
+test_dataset = torchvision.datasets.CIFAR10(root='/anvil/projects/x-cis230270/data/torch_basics_data', train=False,
                                        download=False, transform=transform)
 
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size,
