@@ -9,5 +9,7 @@
        `hands-on-with-anvil/challenges/K_Means`
 6. Click on **K-Means.ipynb** to open the notebook. 
 7. Follow the directions in the notebook to complete the challenge.
-8. The last step will ask you to fillout a google form with your observations from the challenge. 
+8. The last step will ask you to fillout a google form with your observations from the challenge.
+
+If you need help logging in or opening Jupyter see: https://docs.google.com/document/d/128Rh-EAHUH4sphPadX0K6Lh6zEbBkK4A/edit?usp=sharing&ouid=115540436199912968908&rtpof=true&sd=true
 
