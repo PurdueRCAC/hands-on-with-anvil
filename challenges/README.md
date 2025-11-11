@@ -31,6 +31,8 @@ AI and Quantum exercises
 15. [Python_QML_Basics](Python_QML_Basics)
 16. [Python_QLSA](Python_QLSA)
 17. [Python_NN_Basics](Python_NN_Basics)
+18. [K_Means](K_Means)
+19. [Prompt_Engineering](Prompt_Engineering)
 
 After completing 7 of the above challenges, feel free to "choose your own adventure" by completing the rest of the challenges in any order you prefer.
 
