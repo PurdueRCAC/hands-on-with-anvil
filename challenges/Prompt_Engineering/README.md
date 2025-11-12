@@ -194,6 +194,6 @@ Once you have finished, put the following into a text tile:
 * The code and image it generated
 * A short, 2-3 sentence reflection on this exercise. What technique helped the most? What technique didn't help? What would you change?
 
-If you would like post your factal here: https://docs.google.com/document/d/1BAMhqBKoPU0c_rp1P4TK1a7e892DgHSVqb0i84cLUsU/edit?usp=sharing
+If you would like, post your fractal here: https://docs.google.com/document/d/1BAMhqBKoPU0c_rp1P4TK1a7e892DgHSVqb0i84cLUsU/edit?usp=sharing
 
 
