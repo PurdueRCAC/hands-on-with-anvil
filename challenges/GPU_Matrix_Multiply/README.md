@@ -23,58 +23,70 @@ The `cublasDgemm` version of Dgemm in the [CUDA cublasDgemm documentation](https
 cublasDgemm(cublasHandle_t handle, cublasOperation_t transa, cublasOperation_t transb, int m, int n, int k, const double *alpha, const double *A, int lda, const double *B, int ldb, const double *beta, double *C, int ldc)
 ```
 
-Let's break it down:
+## The hipblasDgemm Call
 
-`cublasHandle_t handle` : This variable contains the state of the function. If you wanted to, you could write a test based on this variable to see if the function completed its calculation successfully.
+The `hipblasDgemm` version of Dgemm in the [AMD hipblasDgemm documentation](https://hipblas.readthedocs.io/en/rocm-6.2.2/functions.html#list-of-level-3-blas-functions) is of the form:
 
-`cublasOperation_t transa` and `cublasOperation_t transb` : These arguments have specific options that control how you use matrices A and B. For example, you can use them as they are entered or use the transpose of either. Since we are solving C = A × B, we just want to use them as they are. The option for that is `CUBLAS_OP_N`.
+```
+hipblasDgemm(hipblasHandle_t handle, hipblasOperation_t transA, hipblasOperation_t transB, int m, int n, int k, const double *alpha, const double *AP, int lda, const double *BP, int ldb, const double *beta, double *CP, int ldc)
+```
+
+To break it down:
+
+`hipblasHandle_t handle` : This variable contains the state of the function. If you wanted to, you could write a test based on this variable to see if the function completed its calculation successfully.
+
+`hipblasOperation_t transA` and `hipblasOperation_t transB` : These arguments have specific options that control how you use matrices A and B. For example, you can use them as they are entered or use the transpose of either. Since we are solving C = A × B, we just want to use them as they are. The option for that is `HIPBLAS_OP_N`.
 
 `int m`, `int n`, `int k` : These are the values of the dimensions of your matrices. 
 
-`const double *alpha` : This is a pointer to the scalar alpha.
+`const double *alpha` : This is a pointer to the scalar alpha-- it expects to receive the address of a scalar value.
 
-`const double *A` : This is a pointer to matrix A on the GPU. 
+`const double *AP` : This is a pointer to the address of matrix A on the GPU. 
 
 `int lda` : This represents the value of the leading dimension of matrix A.
 
-`const double *B` : This is a pointer to matrix B on the GPU.
+`const double *BP` : This is a pointer to the address of matrix B on the GPU.
 
 `int ldb` : This represents the value of the leading dimension of matrix B.
 
-`const double *beta` : This is a pointer to the scalar beta.
+`const double *beta` : This is a pointer to the scalar beta--it expects to receive the address of a scalar value.
 
-`double *C` : This is a pointer to the double-precision matrix C on the GPU.
+`double *CP` : This is a pointer to the the address of the double-precision matrix C on the GPU.
 
 `int ldc` : This represents the value of the leading dimension of matrix C.
 
-Your job is to look at the code in `cpu_gpu_dgemm.cpp` and see if you can match the already existing variables to the arguments outlined above in the `cublasDgemm` call. You must pay close attention to whether the variables are declared as pointers, doubles, or integers, and you must think about whether `cublasDgemm` is expecting a variable's value or its address in memory. A quick review of [Addresses and Pointers](https://github.com/olcf/foundational_hpc_skills/blob/master/intro_to_c/README.md#6-addresses-and-pointers) may be helpful before you start. 
+Your job is to look at the code in `cpu_gpu_dgemm.cpp` and see if you can match the already existing variables to the arguments outlined above in the `hipblasDgemm` call. You must pay close attention to wheather the varaibles are declared as pointers, doubles, or integers, and you must think about wheather `hipblasDgemm` is expecting a varaible's value or its address in memory. A quick review of [Addresses and Pointers](https://github.com/olcf/foundational_hpc_skills/blob/master/intro_to_c/README.md#6-addresses-and-pointers) may be helpful before you start. 
 
 
 
-## Add the Call to cublasDgemm
+## Add the Call to hipblasDgemm
 
 Before getting started, you'll need to make sure you're in the `GPU_Matrix_Multiply/` directory:
 
 ```
-$ cd ~/hands-on-with-anvil/challenges/GPU_Matrix_Multiply/
+$ cd ~/hands-on-with-frontier/challenges/GPU_Matrix_Multiply/
 ```
 
-Look in the code `cpu_gpu_dgemm.cpp` and find the `TODO` section and add in the `cublasDgemm` call.
+Look in the code `cpu_gpu_dgemm.cpp` and find the `TODO` section and add in the `hipblasDgemm` call.
 
-> NOTE: You do not need to perform a transpose operation on the matrices, so the `cublasOperation_t` arguments should be set to `CUBLAS_OP_N`.
+> NOTE: You do not need to perform a transpose operation on the matrices, so the `hipblasOperation_t` arguments should be set to `HIPBLAS_OP_N`.
 
 &nbsp;
 
 ## Compile the Code
 
-Once you think you've correctly added the cuBLAS routine, try to compile the code.
+Once you think you've correctly added the hipBLAS routine, try to compile the code.
 
-First, you'll need to make sure your programming environment is set up correctly for this program. You'll need to use the cBLAS library for the CPU matrix multiply (`dgemm`) and the cuBLAS library for the GPU-version (`cublasDgemm`), so you'll need to load the following modules:
+First, you'll need to make sure your programming environment is set up correctly for this program. You'll need to use the cBLAS library for the CPU matrix multiply (`dgemm`) and the hipBLAS library for the GPU-version (`hipblasDgemm`), so you'll need to load the following modules:
 
 ```bash
-$ module load modtree/gpu
+$ module load PrgEnv-amd
+$ module load rocm/$OLCF_FAMILY_COMPILER_VERSION             
 $ module load openblas
 ```
+
+Note: Our module system sets environment variables to help keep all the versions of the software you load consistent. In the example above, the `$OLCF_FAMILY_COMPILER_VERSION` environment variable holds the version of the AMD compiler that is loaded by module load `PrgEnv_amd`. We use this variable to ensure the same version of the ROCm GPU programming toolchain is loaded. 
+
 
 Then, try to compile the code:
 
@@ -102,22 +114,27 @@ The hints get progressively more helpful as you go down. If you want to challeng
 
 * A good place to start is to observe how the variables declared in the code, map to the `cblasDgemm` arguments in the CPU version of Dgemm that is already correctly implemented in the code.
 * If you are still unsure how the declared variables map to arguments in the functions, you may want to look up `cblasDgemm` and see how its arguments appear in the documentation, then compare those to the implemented `cblasDgemm` in the code.
-* Next, look for the variable declarations made specifically for the GPU (device). Consider where those might fit in the `cublasDgemm` arguments.
-Remember that you do not need to perform a transpose operation on the matrices, so the `cublasOperation_t` arguments should be set to `CUBLAS_OP_N`.
+* Next, look for the variable declarations made specifically for the GPU (device). Consider where those might fit in the `hipblasDgemm` arguments.
+Remember that you do not need to perform a transpose operation on the matrices, so the `hipblasOperation_t` arguments should be set to `HIPBLAS_OP_N`.
 * Pointers 
 
-In the code we:
+In the code:
 ```
  /* Allocate memory for d_A, d_B, d_C on GPU ----------------------------------------*/
     double *d_A, *d_B, *d_C;'
 ```
 
 Here: 
-1.  `d_A`, `d_B`, `d_`C are declared as pointers on the GPU. In C, pointers are special variables used to store memory addresses. The `cublasDgemm` function is looking for the *memory addresses*, not the *values*, for these pointers. 
-See [Addresses and Pointers](https://github.com/olcf/foundational_hpc_skills/blob/master/intro_to_c/README.md#6-addresses-and-pointers) to determine if you should use the `d_A`, `*d_A`, or `&d_A` form of the variables to accomplish this.  
+* d_A, d_B, and d_C are declared as pointers to memory addresses on the GPU. In C, pointers are special variables used to store memory addresses. The hipblasDgemm function expects the memory addresses (pointers), not the values, for these matrices. It is important to note that d_A, d_B, and d_C are already pointers because they were declared as double *.
+See Addresses and Pointers for guidance on when to use the d_A, *d_A, or &d_A forms of a variable.
 
+In the code: 
+```
+    const double alpha = 1.0;
+    const double beta = 0.0;
+```
 
-* Note that `cublasDgemm` expects pointers for `alpha` and `beta`, but `alpha` and `beta` are declared as regular doubles for the CPU in the code. You must pass the addresses of `alpha` and `beta` in `cublasDgemm`.
+* Note that hipblasDgemm expects pointers for alpha and beta, but in the code alpha and beta are declared as regular double variables on the CPU. You must pass the addresses of alpha and beta to hipblasDgemm; the operator that does this in C is the address-of operator (&).
 See [Addresses and Pointers](https://github.com/olcf/foundational_hpc_skills/blob/master/intro_to_c/README.md#6-addresses-and-pointers) to determine if you should use the `alpha`, `*alpha`, or `&alpha` form of the variables to accomplish this.
 
 
