@@ -2,7 +2,7 @@
 
 When writing a code to be run on a hybrid compute system (i.e., one with both CPUs and GPUs) such as Anvil, you must consider that the CPU and GPU are separate processors with separate memory associated with them. As such, when running a program on this kind of system, control shifts between the CPU and GPU throughout the code and (because of the separate memory) data must be passed back and forth between the two processors as needed.
 
-In this challenge, you will learn how to perform these data transfers with a simple HIP vector addition program. Your task will be to add in missing arguments to the 3 `hipMemcpy` API calls (functions used to transfer data between CPU and GPU) so data will be transferred correctly between the CPU (host) and GPU (device). To do so, you will need to look up the `hipMemcpy` API in AMD's ROCm API documentation (link below). 
+In this challenge, you will learn how to perform these data transfers with a simple HIP vector addition program. Your task will be to add in missing arguments to the 3 `cudaMemcpy` API calls (functions used to transfer data between CPU and GPU) so data will be transferred correctly between the CPU (host) and GPU (device). To do so, you will need to look up the `cudaMemcpy` API in AMD's ROCm API documentation (link below). 
 
 ## Basic Outline of the Code
 
@@ -26,7 +26,7 @@ Before getting started, you'll need to make sure you're in the `GPU_Data_Transfe
 $ cd ~/hands-on-with-anvil/challenges/GPU_Data_Transfers/
 ```
 
-There are two places in the `vector_addition.cpp` code (identified with the word `TODO`) where missing arguments will need to be added to the `hipMemcpy` API calls. Find these two places and add in the missing arguments by looking up the `hipMemcpy` API call to know which arguments to add. Use [this link](https://rocmdocs.amd.com/en/latest/ROCm_API_References/HIP_API/Memory-Management.html#hipmemcpy) to the AMD Documentation on the `hipMemcpy` routine to learn how to use the routine.
+There are two places in the `vector_addition.cpp` code (identified with the word `TODO`) where missing arguments will need to be added to the `cudaMemcpy` API calls. Find these two places and add in the missing arguments by looking up the `cudaMemcpy` API call to know which arguments to add. Use [this link](https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__MEMORY.html#group__CUDART__MEMORY_1gc263dbe6574220cc776b45438fc351e8) to the AMD Documentation on the `cudaMemcpy` routine to learn how to use the routine.
 
 > NOTE: You will not need to edit any files other than `vector_addition.cpp`.
 
@@ -36,11 +36,11 @@ There are two places in the `vector_addition.cpp` code (identified with the word
 
 ## Compile and Run the Program
 
-This module involves using the ROCm Toolchain, so we need to expose it to the Programming Environment.
+This module involves using the CUDA Toolchain, so we need to expose it to the Programming Environment.
 
-To expose the ROCm Toolchain, We are going to load the AMD Programming Environment:
+To expose the CUDA Toolchain:
 ```bash
-$ module load PrgEnv-amd
+$ module load modtree/gpu
 ``` 
 
 If you think you have added the correct lines to the code, try to compile:
