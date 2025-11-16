@@ -1,4 +1,4 @@
-#include "hip/hip_runtime.h"
+#include <cuda_runtime.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -27,9 +27,9 @@ int main()
 
     /* Allocate memory for arrays d_A, d_B, and d_C on device ---------- */
     double *d_A, *d_B, *d_C;
-    hipMalloc(&d_A, bytes);
-    hipMalloc(&d_B, bytes);
-    hipMalloc(&d_C, bytes);
+    cudaMalloc(&d_A, bytes);
+    cudaMalloc(&d_B, bytes);
+    cudaMalloc(&d_C, bytes);
 
     /* Fill host arrays A and B ---------------------------------------- */
     for(int i=0; i<N; i++)
@@ -39,14 +39,14 @@ int main()
     }
 
     /* Copy data from host arrays A and B to device arrays d_A and d_B - */
-    /* TODO: Look up hipMemcpy API and..                                */
-    /*  Replace the ?s in the hipMemcpy calls below with the correct    */
+    /* TODO: Look up cudaMemcpy API and..                                */
+    /*  Replace the ?s in the cudaMemcpy calls below with the correct    */
     /*  arguments to                                                     */
     /*     - copy host array A to device array d_A                       */
     /*     - copy host array B to device array d_B                       */
     /* ----------------------------------------------------------------- */
-    hipMemcpy(??, ??, bytes, hipMemcpyHostToDevice);
-    hipMemcpy(??, ??, bytes, hipMemcpyHostToDevice);
+    cudaMemcpy(d_A, A, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, B, bytes, cudaMemcpyHostToDevice);
 
     /* -------------------------------------------------------------------
     Set execution configuration parameters
@@ -57,16 +57,15 @@ int main()
     int wg_in_grid = ceil( float(N) / thr_per_wg );
 
     /* Launch kernel --------------------------------------------------- */
-    /* hip add_vectors<<< wg_in_grid, thr_per_wg >>>(d_A, d_B, d_C); */
-     hipLaunchKernelGGL(add_vectors,wg_in_grid,thr_per_wg,0,0,d_A,d_B,d_C);
+     add_vectors<<< wg_in_grid, thr_per_wg >>>(d_A, d_B, d_C);
 
     /* Copy data from device array d_C to host array C ----------------- */
-    /* TODO: Look up hipMemcpy API and...                               */
-    /*  Replace the ?s in the hipMemcpy call below with the correct     */
+    /* TODO: Look up cudaMemcpy API and...                               */
+    /*  Replace the ?s in the cudaMemcpy call below with the correct     */
     /*  arguments to                                                     */
     /*     - copy device array d_C to host array C                       */
     /* ----------------------------------------------------------------- */
-    hipMemcpy(??, ??, bytes, hipMemcpyDeviceToHost);
+    cudaMemcpy(C, d_C, bytes, cudaMemcpyDeviceToHost);
 
     /* Verify results -------------------------------------------------- */
     for(int i=0; i<N; i++)
@@ -79,9 +78,9 @@ int main()
     }	
 
     /* Free GPU memory ------------------------------------------------- */
-    hipFree(d_A);
-    hipFree(d_B);
-    hipFree(d_C);
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
 
     /* Free CPU memory ------------------------------------------------- */
     free(A);
